@@ -5,6 +5,7 @@ import { catalogService, type PaginatedProducts } from '@/services';
 import { useProductFilters } from '@/hooks/useProductFilters';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { FilterSidebar } from '@/components/filters/FilterSidebar';
+import { MobileFilterSheet } from '@/components/filters/MobileFilterSheet';
 import { SortDropdown } from '@/components/filters/SortDropdown';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { getCategoryIcon } from '@/lib/categoryIcons';
@@ -104,16 +105,25 @@ export function CategoryListingPage() {
       )}
 
       <div className="mt-6 flex flex-col gap-8 lg:flex-row">
-        <FilterSidebar
-          filters={filters}
-          onBrandsChange={setBrands}
-          onMotorcycleBrandsChange={setMotorcycleBrands}
-          onPriceChange={setPriceRange}
-          onReset={resetFilters}
-        />
+        <div className="hidden lg:block lg:w-64 lg:shrink-0">
+          <FilterSidebar
+            filters={filters}
+            onBrandsChange={setBrands}
+            onMotorcycleBrandsChange={setMotorcycleBrands}
+            onPriceChange={setPriceRange}
+            onReset={resetFilters}
+          />
+        </div>
 
         <div className="flex-1">
-          <div className="mb-4 flex items-center justify-end">
+          <div className="mb-4 flex items-center justify-between lg:justify-end">
+            <MobileFilterSheet
+              filters={filters}
+              onBrandsChange={setBrands}
+              onMotorcycleBrandsChange={setMotorcycleBrands}
+              onPriceChange={setPriceRange}
+              onReset={resetFilters}
+            />
             <SortDropdown value={filters.sort} onChange={setSort} />
           </div>
 

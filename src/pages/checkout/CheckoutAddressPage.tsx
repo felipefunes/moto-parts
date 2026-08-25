@@ -23,9 +23,14 @@ export function CheckoutAddressPage() {
   const { lines, subtotalClp } = useCart();
   const shippingClp = cartService.calculateShipping(subtotalClp);
 
+  // Se valida solo al montar: reaccionar a cada cambio de `lines.length` es
+  // lo que causaba que, en el paso de pago, vaciar el carrito tras una compra
+  // exitosa disparara este mismo guard y mandara al usuario de vuelta al
+  // carrito en lugar de a la confirmación (ver CheckoutPaymentPage).
   useEffect(() => {
     if (lines.length === 0) navigate('/carrito', { replace: true });
-  }, [lines.length, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleSubmit(address: Address) {
     sessionStorage.setItem(CHECKOUT_ADDRESS_STORAGE_KEY, JSON.stringify(address));

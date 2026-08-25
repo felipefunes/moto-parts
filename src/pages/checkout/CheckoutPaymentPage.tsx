@@ -25,6 +25,12 @@ export function CheckoutPaymentPage() {
   const address = readStoredAddress();
   const [creatingOrder, setCreatingOrder] = useState(false);
 
+  // Se valida solo al montar (ver mismo comentario en CheckoutAddressPage):
+  // handlePaymentResult vacía el carrito con clear() tras un pago exitoso, y
+  // ese cambio de estado en un store externo (Zustand) no queda garantizado
+  // en el mismo render que el `navigate()` a la confirmación — reaccionar a
+  // `lines.length` aquí mandaba al usuario de vuelta a /carrito en vez de a
+  // la confirmación del pedido, justo después de pagar.
   useEffect(() => {
     if (lines.length === 0) {
       navigate('/carrito', { replace: true });
@@ -34,7 +40,7 @@ export function CheckoutPaymentPage() {
       navigate('/checkout/direccion', { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lines.length]);
+  }, []);
 
   async function handlePaymentResult(result: PaymentResult) {
     if (result.status !== 'authorized' || !address) return;
@@ -47,12 +53,12 @@ export function CheckoutPaymentPage() {
       paymentResult: result,
       shippingClp,
     });
+    navigate(`/checkout/confirmacion/${order.orderNumber}`, { replace: true });
     clear();
     sessionStorage.removeItem(CHECKOUT_ADDRESS_STORAGE_KEY);
-    navigate(`/checkout/confirmacion/${order.orderNumber}`, { replace: true });
   }
 
-  if (lines.length === 0 || !address) return null;
+  if (!address) return null;
 
   return (
     <div className="container-page py-8">

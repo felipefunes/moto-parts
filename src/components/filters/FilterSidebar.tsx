@@ -18,7 +18,7 @@ export function FilterSidebar({
   onReset: () => void;
 }) {
   return (
-    <aside className="w-full shrink-0 lg:w-64">
+    <div className="flex w-full flex-col">
       <div className="flex items-center justify-between pb-2">
         <h2 className="font-heading text-base font-bold text-text-primary">Filtros</h2>
         <button onClick={onReset} className="text-xs font-semibold text-brand-cyan hover:underline">
@@ -38,6 +38,6 @@ export function FilterSidebar({
         selected={filters.motorcycleBrands ?? []}
         onChange={onMotorcycleBrandsChange}
       />
-    </aside>
+    </div>
   );
 }
