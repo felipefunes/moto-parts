@@ -1,0 +1,45 @@
+/* Tema "Telar" (carteras artesanales) — claro y cálido, opuesto a propósito al de motos. */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/fraunces/500.css';
+@import '@fontsource/fraunces/600.css';
+@import '@fontsource/fraunces/700.css';
+@import '@fontsource/fraunces/900.css';
+
+:root {
+  color-scheme: light;
+
+  --color-bg-primary: 251 247 241;
+  --color-bg-secondary: 244 235 221;
+  --color-bg-elevated: 255 255 255;
+  --color-bg-overlay: 42 33 27;
+
+  --color-border: 227 213 192;
+  --color-border-subtle: 237 226 209;
+
+  --color-text-primary: 47 36 28;
+  --color-text-secondary: 107 90 74;
+  --color-text-muted: 156 136 115;
+
+  --color-brand-violet: 193 101 61;
+  --color-brand-blue: 217 142 74;
+  --color-brand-cyan: 140 90 60;
+
+  --color-racing-red: 181 72 46;
+  --color-racing-amber: 201 138 44;
+  --color-racing-lime: 124 139 74;
+
+  --color-success: 91 123 79;
+  --color-warning: 201 138 44;
+  --color-danger: 181 72 46;
+  --color-price: 168 80 46;
+
+  --color-shadow: 42 33 27;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Fraunces', 'Georgia', serif;
+  --font-display: 'Fraunces', 'Georgia', serif;
+  --font-mono: 'Inter', system-ui, sans-serif;
+}

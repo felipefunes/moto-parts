@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    publicDir: theme === 'motos' ? 'public' : `public-${theme}`,
     resolve: {
       alias: {
         '@': path.resolve(dirname, './src'),

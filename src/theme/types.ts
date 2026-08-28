@@ -19,6 +19,7 @@ export interface ThemeConfig {
   primaryCategoryHref: string;
 
   hero: {
+    badgeIcon: LucideIcon;
     badge: string;
     titleTop: string;
     titleAccent: string;

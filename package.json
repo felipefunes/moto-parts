@@ -4,12 +4,17 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "vite --mode motos",
+    "build": "tsc -b && vite build --mode motos",
+    "dev:motos": "vite --mode motos",
+    "build:motos": "tsc -b && vite build --mode motos",
+    "dev:carteras": "vite --mode carteras",
+    "build:carteras": "tsc -b && vite build --mode carteras",
     "preview": "vite preview",
     "lint": "eslint ."
   },
   "dependencies": {
+    "@fontsource/fraunces": "^5.1.0",
     "@fontsource/inter": "^5.1.0",
     "@fontsource/orbitron": "^5.1.0",
     "@fontsource/rajdhani": "^5.1.0",

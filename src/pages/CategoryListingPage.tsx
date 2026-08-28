@@ -86,7 +86,7 @@ export function CategoryListingPage() {
           <h1 className="font-heading text-2xl font-bold text-text-primary">
             {subcategory?.name ?? category?.name}
           </h1>
-          {result && <p className="text-sm text-text-muted">{result.total} repuestos encontrados</p>}
+          {result && <p className="text-sm text-text-muted">{result.total} productos encontrados</p>}
         </div>
       </div>
 

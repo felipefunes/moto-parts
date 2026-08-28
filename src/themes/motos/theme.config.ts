@@ -13,6 +13,7 @@ export const themeConfig: ThemeConfig = {
   primaryCategoryHref: '/categoria/motor',
 
   hero: {
+    badgeIcon: Wrench,
     badge: '+8.000 repuestos en catálogo',
     titleTop: 'Repuestos de moto,',
     titleAccent: 'directo al taller.',

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Wrench } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { GradientText } from '@/components/ui/GradientText';
 import { unsplashImage } from '@/lib/unsplash';
@@ -13,7 +13,7 @@ export function HeroBanner() {
       <div className="container-page grid items-center gap-10 py-14 lg:grid-cols-2 lg:py-20">
         <div className="relative z-10">
           <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-violet/40 bg-brand-violet/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand-cyan">
-            <Wrench size={13} /> {hero.badge}
+            <hero.badgeIcon size={13} /> {hero.badge}
           </span>
           <h1 className="font-display text-4xl font-black leading-[1.05] tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
             {hero.titleTop}

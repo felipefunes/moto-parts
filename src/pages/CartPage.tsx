@@ -17,7 +17,7 @@ export function CartPage() {
       <div className="container-page flex flex-col items-center justify-center gap-4 py-24 text-center">
         <ShoppingCart size={48} className="text-text-muted" />
         <h1 className="font-heading text-xl font-bold text-text-primary">Tu carrito está vacío</h1>
-        <p className="text-sm text-text-secondary">Explora el catálogo y encuentra el repuesto que necesitas.</p>
+        <p className="text-sm text-text-secondary">Explora el catálogo y encuentra lo que necesitas.</p>
         <Link to="/">
           <Button size="lg">Ir al catálogo</Button>
         </Link>
