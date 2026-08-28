@@ -36,7 +36,8 @@ export interface Product {
   condition: ProductCondition;
   images: ProductImage[];
   specs: ProductSpec[];
-  compatibility: MotorcycleCompatibility[];
+  /** Específico de temas tipo "vehículos" (ej. motos). Opcional: otros temas no lo usan. */
+  compatibility?: MotorcycleCompatibility[];
   rating: number;
   reviewsCount: number;
   warrantyMonths: number;

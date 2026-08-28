@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Truck, ShieldCheck, CreditCard, Undo2 } from 'lucide-react';
-import { LogoWordmark } from '@/assets/logo/LogoWordmark';
-import { TOP_LEVEL_CATEGORIES } from '@/data/categories';
+import { TOP_LEVEL_CATEGORIES } from '@theme-active/data/categories';
+import { themeConfig } from '@/theme';
 
 const TRUST_ITEMS = [
   { icon: Truck, label: 'Envíos a todo Chile', desc: 'Despacho en 24–72 hrs' },
-  { icon: ShieldCheck, label: 'Garantía en todos los repuestos', desc: 'Hasta 12 meses' },
+  { icon: ShieldCheck, label: 'Garantía en todos los productos', desc: 'Hasta 12 meses' },
   { icon: CreditCard, label: 'Pago 100% seguro', desc: 'Webpay, Mercado Pago y transferencia' },
   { icon: Undo2, label: 'Devoluciones fáciles', desc: '30 días para cambios' },
 ];
@@ -28,10 +28,8 @@ export function Footer() {
       <div className="border-t border-border">
         <div className="container-page grid grid-cols-2 gap-8 py-10 sm:grid-cols-4">
           <div className="col-span-2 sm:col-span-1">
-            <LogoWordmark size="md" showTagline />
-            <p className="mt-4 text-sm text-text-secondary">
-              Catálogo online de repuestos de motocicletas, originales y aftermarket, para todo Chile.
-            </p>
+            <themeConfig.Logo size="md" showTagline />
+            <p className="mt-4 text-sm text-text-secondary">{themeConfig.footerDescription}</p>
           </div>
 
           <div>
@@ -92,7 +90,10 @@ export function Footer() {
 
       <div className="border-t border-border py-4">
         <div className="container-page flex flex-col items-center justify-between gap-2 text-xs text-text-muted sm:flex-row">
-          <span>© {new Date().getFullYear()} RPM Parts. Prototipo de demostración — no procesa pagos reales.</span>
+          <span>
+            © {new Date().getFullYear()} {themeConfig.siteName}. Prototipo de demostración — no procesa pagos
+            reales.
+          </span>
           <span>Hecho en Chile</span>
         </div>
       </div>

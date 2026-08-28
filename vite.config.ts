@@ -5,11 +5,21 @@ import { fileURLToPath } from 'node:url';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(dirname, './src'),
+const THEMES = ['motos', 'carteras'] as const;
+
+// Cada tema es un build distinto (`vite --mode <tema>`), no un registry en
+// runtime: `@theme-active` resuelve a la carpeta del tema en tiempo de build,
+// así un build nunca empaqueta los datos/imágenes de los otros temas.
+export default defineConfig(({ mode }) => {
+  const theme = (THEMES as readonly string[]).includes(mode) ? mode : 'motos';
+
+  return {
+    plugins: [react()],
+    resolve: {
+      alias: {
+        '@': path.resolve(dirname, './src'),
+        '@theme-active': path.resolve(dirname, `./src/themes/${theme}`),
+      },
     },
-  },
+  };
 });

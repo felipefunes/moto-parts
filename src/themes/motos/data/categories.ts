@@ -1,5 +1,6 @@
 import type { Category } from '@/types';
-import { CATEGORY_FALLBACK_IMAGES, unsplashImage } from './images';
+import { unsplashImage } from '@/lib/unsplash';
+import { CATEGORY_FALLBACK_IMAGES } from './images';
 
 interface CategorySeed {
   slug: string;
