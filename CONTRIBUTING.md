@@ -108,6 +108,51 @@ Notas:
 
 La capa `src/services/` está diseñada para tener la misma forma que tendrá la futura API REST
 sobre PostgreSQL. Al conectar el backend real, el objetivo es que solo cambie el cuerpo de esas
-funciones (de leer `src/data/*` a hacer `fetch`), sin tocar componentes ni tipos. Mantené esa
-disciplina al agregar funcionalidad nueva: los componentes no deberían importar `src/data/*`
-directamente, solo `src/services/*`.
+funciones (de leer `@theme-active/data/*` a hacer `fetch`), sin tocar componentes ni tipos.
+Mantené esa disciplina al agregar funcionalidad nueva: los componentes no deberían importar
+`@theme-active/data/*` directamente, solo `src/services/*`.
+
+## 8. Cómo funciona el sistema de temas
+
+Este repo dejó de ser una sola tienda (RPM Parts) para ser una plataforma con **temas**
+intercambiables (`src/themes/motos/`, `src/themes/carteras/`, …): mismo código de catálogo,
+carrito y checkout, distinta identidad/datos por cliente. Cada tema es un **build independiente**
+(`vite build --mode <tema>`), pensado para desplegarse como instancia separada por cliente — no
+un registry en runtime ni un SaaS multi-tenant compartido, porque la premisa del negocio es "cada
+cliente eventualmente tiene su propia base de datos", no una sola instancia sirviendo a todos.
+
+**Cómo resuelve el build cuál tema usar:** `vite.config.ts` mapea el `mode` de Vite a un alias
+`@theme-active` que apunta a `src/themes/<tema>/` en tiempo de build (no en runtime). Esto es
+importante: un build de `carteras` **nunca** empaqueta los datos/imágenes de `motos` ni
+viceversa, sin necesidad de tree-shaking especial. `npm run dev`/`build` (sin sufijo) son alias
+de `motos` — así `render.yaml` sigue funcionando sin cambios.
+
+**Dónde vive cada cosa:**
+- `src/theme/types.ts` — el contrato `ThemeConfig` (copy, flags, componentes intercambiables
+  como el logo o el panel extra de producto). Si un texto o dato es específico de un negocio,
+  debería salir de `ThemeConfig`, no estar hardcodeado en un componente compartido.
+- `src/themes/<tema>/theme.config.ts` — la implementación concreta del contrato para ese tema.
+- `src/themes/<tema>/theme.css` — colores (como CSS custom properties, triplete "R G B" para que
+  sigan funcionando los modificadores de opacidad de Tailwind) y tipografías de ese tema. Los
+  colores en `tailwind.config.ts` son siempre `rgb(var(--color-x) / <alpha-value>)`, nunca hex
+  fijo — así un mismo Tailwind config sirve a cualquier tema.
+- `src/themes/<tema>/data/*` — el catálogo mock de ese tema (categorías, productos, imágenes).
+- `.env.<tema>` — **únicamente** las variables `VITE_*` que necesita el templating de
+  `index.html` (`%VITE_SITE_TITLE%`, etc.). Todo lo demás va en TypeScript vía `ThemeConfig`, no
+  en variables de entorno — mezclar ambos mecanismos para el mismo tipo de dato hace que la
+  configuración de un tema quede repartida e inconsistente.
+
+**Regla para agregar un tercer tema:** copiar la carpeta de `src/themes/carteras/` (es el
+ejemplo más simple, sin sub-categorías ni panel extra de producto) como punto de partida,
+implementar `ThemeConfig` completo, agregar `.env.<tema>`, y los scripts `dev:<tema>`/
+`build:<tema>` en `package.json`. Antes de dar por terminado un tema nuevo, correr el mismo
+recorrido E2E completo (home → categoría con filtros → producto → carrito → checkout → pago →
+confirmación) que se documenta en la sección 5 — no asumir que "si el otro tema funciona, este
+también".
+
+**Concesión deliberada a la genericidad total:** `Product.compatibility` (modelos de vehículo
+compatibles) sigue siendo un campo del tipo `Product` compartido, ahora opcional, en vez de
+vivir en un tipo genérico parametrizado por tema. Es aceptable porque solo temas tipo "vehículos"
+lo usan y el costo de un array opcional vacío es nulo — pero si un tercer tema necesita otro
+campo estructurado igual de específico, vale la pena reconsiderar si `Product` necesita
+genéricos (`Product<TExtra>`) en vez de seguir acumulando campos opcionales uno por uno.
