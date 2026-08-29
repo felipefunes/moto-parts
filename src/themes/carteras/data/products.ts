@@ -56,9 +56,9 @@ function buildProducts(): Product[] {
     return {
       id: `p-${String(index + 1).padStart(3, '0')}`,
       slug: `${slugify(seed.name)}`,
-      sku: `TELAR-${seed.categorySlug.slice(0, 3).toUpperCase()}-${String(index + 1).padStart(4, '0')}`,
+      sku: `RW-${seed.categorySlug.slice(0, 3).toUpperCase()}-${String(index + 1).padStart(4, '0')}`,
       name: seed.name,
-      brand: 'Telar',
+      brand: 'RW',
       categoryId: seed.categorySlug,
       subcategoryId: seed.categorySlug,
       description: `${seed.name}, hecha a mano en Chile. ${seed.shortDescription} Cada pieza es única y puede presentar leves variaciones propias del trabajo artesanal. Incluye garantía de manufactura y despacho a todo Chile.`,

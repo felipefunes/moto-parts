@@ -14,7 +14,7 @@ function LogoMark({ size = 32, className }: { size?: number; className?: string 
       fill="none"
       className={className}
       role="img"
-      aria-label="Telar"
+      aria-label="RW"
     >
       <defs>
         <linearGradient id="telar-logo-gradient" x1="6" y1="42" x2="42" y2="6" gradientUnits="userSpaceOnUse">
@@ -64,7 +64,7 @@ export function Logo({
       <LogoMark size={markSize} />
       <div className="leading-none">
         <span className={clsx('font-display font-bold tracking-wide text-gradient-brand', textSize)}>
-          Telar
+          RW
         </span>
         {showTagline && (
           <div className="mt-0.5 font-heading text-xs uppercase tracking-[0.2em] text-text-muted">

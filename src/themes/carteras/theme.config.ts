@@ -5,7 +5,7 @@ import { Logo } from './Logo';
 
 export const themeConfig: ThemeConfig = {
   id: 'carteras',
-  siteName: 'Telar',
+  siteName: 'RW',
   tagline: 'Carteras artesanales hechas a mano en Chile',
   searchPlaceholder: 'Busca bandoleras, totes, clutches...',
   primaryCategoryHref: '/categoria/bandoleras',
@@ -28,7 +28,7 @@ export const themeConfig: ThemeConfig = {
 
   about: {
     intro:
-      'Telar nace del oficio de talabarteros y curtidores chilenos: cada cartera se corta, cose y termina a mano, con cuero de curtiembres locales. Este es un prototipo de producto — la primera versión de un catálogo que buscamos escalar a nivel nacional.',
+      'RW nace del oficio de talabarteros y curtidores chilenos: cada cartera se corta, cose y termina a mano, con cuero de curtiembres locales. Este es un prototipo de producto — la primera versión de un catálogo que buscamos escalar a nivel nacional.',
     pillars: [
       {
         icon: Scissors,

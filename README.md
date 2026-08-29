@@ -5,7 +5,7 @@ build: mismo código de catálogo, carrito y checkout, distinta identidad/datos 
 incluye dos temas de demostración:
 
 - **`motos`** — RPM Parts, repuestos de motocicletas (dark mode, estética MotoGP/cripto).
-- **`carteras`** — Telar, carteras artesanales de cuero (light mode, cálido, tipografía serif).
+- **`carteras`** — RW, carteras artesanales de cuero (light mode, cálido, tipografía serif).
 
 Cada tema es un build independiente, pensado para desplegarse como instancia separada por
 cliente (no un SaaS multi-tenant compartido) — ver `CONTRIBUTING.md` para el detalle de la
@@ -44,7 +44,7 @@ src/
   theme/          Contrato ThemeConfig + punto de acceso al tema activo (src/theme/index.ts)
   themes/
     motos/        Todo lo específico de RPM Parts: datos, logo, copy, panel de compatibilidad
-    carteras/     Todo lo específico de Telar: datos, logo, copy
+    carteras/     Todo lo específico de RW: datos, logo, copy
   types/          Modelos de datos compartidos (Product, Category, Cart, Address, Payment, Order)
   services/       Capa de acceso a datos con la misma forma que tendrá la futura API REST
   store/          Estado global (carrito, UI) con Zustand
