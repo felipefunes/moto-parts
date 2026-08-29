@@ -1,6 +1,7 @@
 import type { Product, ProductCondition } from '@/types';
 import { slugify } from '@/lib/slugify';
-import { unsplashImage, IMAGES, CATEGORY_FALLBACK_IMAGES } from './images';
+import { unsplashImage } from '@/lib/unsplash';
+import { IMAGES, CATEGORY_FALLBACK_IMAGES } from './images';
 import { MOTORCYCLE_MODELS } from './motorcycleModels';
 
 interface ProductSeed {

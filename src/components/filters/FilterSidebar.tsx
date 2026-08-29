@@ -1,5 +1,5 @@
-import { PRODUCT_BRANDS } from '@/data/products';
-import { MOTORCYCLE_BRANDS } from '@/data/motorcycleModels';
+import { PRODUCT_BRANDS } from '@theme-active/data/products';
+import { themeConfig } from '@/theme';
 import { FilterCheckboxGroup } from './FilterCheckboxGroup';
 import { PriceRangeFilter } from './PriceRangeFilter';
 import type { ProductFilters } from '@/types';
@@ -27,17 +27,19 @@ export function FilterSidebar({
       </div>
       <PriceRangeFilter min={filters.priceMin} max={filters.priceMax} onChange={onPriceChange} />
       <FilterCheckboxGroup
-        title="Marca del repuesto"
+        title="Marca"
         options={PRODUCT_BRANDS}
         selected={filters.brands ?? []}
         onChange={onBrandsChange}
       />
-      <FilterCheckboxGroup
-        title="Moto compatible"
-        options={MOTORCYCLE_BRANDS}
-        selected={filters.motorcycleBrands ?? []}
-        onChange={onMotorcycleBrandsChange}
-      />
+      {themeConfig.hasCompatibilityFilter && (
+        <FilterCheckboxGroup
+          title={themeConfig.compatibilityFilterLabel ?? 'Compatibilidad'}
+          options={themeConfig.strip.items}
+          selected={filters.motorcycleBrands ?? []}
+          onChange={onMotorcycleBrandsChange}
+        />
+      )}
     </div>
   );
 }

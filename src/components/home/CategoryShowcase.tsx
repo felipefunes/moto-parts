@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { TOP_LEVEL_CATEGORIES } from '@/data/categories';
+import { TOP_LEVEL_CATEGORIES } from '@theme-active/data/categories';
 
 export function CategoryShowcase() {
   return (

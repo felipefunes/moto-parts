@@ -1,7 +1,12 @@
 import type { Category, Product, ProductFilters } from '@/types';
-import { CATEGORIES, TOP_LEVEL_CATEGORIES, getCategoryBySlug, getSubcategories, getSubcategoryBySlug } from '@/data/categories';
-import { PRODUCTS, PRODUCT_BRANDS } from '@/data/products';
-import { MOTORCYCLE_BRANDS } from '@/data/motorcycleModels';
+import {
+  CATEGORIES,
+  TOP_LEVEL_CATEGORIES,
+  getCategoryBySlug,
+  getSubcategories,
+  getSubcategoryBySlug,
+} from '@theme-active/data/categories';
+import { PRODUCTS, PRODUCT_BRANDS } from '@theme-active/data/products';
 import { mockRequest } from './api/httpClient';
 
 function applyFilters(products: Product[], filters: ProductFilters): Product[] {
@@ -20,14 +25,14 @@ function applyFilters(products: Product[], filters: ProductFilters): Product[] {
         p.name.toLowerCase().includes(q) ||
         p.brand.toLowerCase().includes(q) ||
         p.shortDescription.toLowerCase().includes(q) ||
-        p.compatibility.some((c) => `${c.brand} ${c.model}`.toLowerCase().includes(q)),
+        (p.compatibility?.some((c) => `${c.brand} ${c.model}`.toLowerCase().includes(q)) ?? false),
     );
   }
   if (filters.brands?.length) {
     result = result.filter((p) => filters.brands!.includes(p.brand));
   }
   if (filters.motorcycleBrands?.length) {
-    result = result.filter((p) => p.compatibility.some((c) => filters.motorcycleBrands!.includes(c.brand)));
+    result = result.filter((p) => p.compatibility?.some((c) => filters.motorcycleBrands!.includes(c.brand)));
   }
   if (filters.priceMin != null) {
     result = result.filter((p) => p.priceClp >= filters.priceMin!);
@@ -107,6 +112,4 @@ export const catalogService = {
     ),
 
   getAvailableBrands: (): Promise<string[]> => mockRequest(PRODUCT_BRANDS),
-
-  getAvailableMotorcycleBrands: (): Promise<string[]> => mockRequest(MOTORCYCLE_BRANDS),
 };

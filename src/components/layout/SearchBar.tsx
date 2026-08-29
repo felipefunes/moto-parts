@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
+import { themeConfig } from '@/theme';
 
 export function SearchBar({ className }: { className?: string }) {
   const [query, setQuery] = useState('');
@@ -22,7 +23,7 @@ export function SearchBar({ className }: { className?: string }) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Busca pastillas de freno, cadenas, bujías…"
+          placeholder={themeConfig.searchPlaceholder}
           className="h-11 w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted focus:outline-none"
         />
       </div>

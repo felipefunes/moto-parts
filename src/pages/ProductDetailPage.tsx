@@ -10,11 +10,11 @@ import { ProductGallery } from '@/components/product/ProductGallery';
 import { PriceTag } from '@/components/product/PriceTag';
 import { RatingStars } from '@/components/product/RatingStars';
 import { StockBadge } from '@/components/product/StockBadge';
-import { CompatibilityList } from '@/components/product/CompatibilityList';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { getCategoryBySlug, getSubcategoryBySlug } from '@/data/categories';
+import { getCategoryBySlug, getSubcategoryBySlug } from '@theme-active/data/categories';
+import { themeConfig } from '@/theme';
 import { NotFoundPage } from './NotFoundPage';
 
 export function ProductDetailPage() {
@@ -166,10 +166,7 @@ export function ProductDetailPage() {
         </div>
       </div>
 
-      <div className="mt-10">
-        <h2 className="mb-4 font-heading text-lg font-bold text-text-primary">Compatible con estos modelos</h2>
-        <CompatibilityList items={product.compatibility} />
-      </div>
+      {themeConfig.ProductExtraSection && <themeConfig.ProductExtraSection product={product} />}
 
       {related.length > 0 && (
         <div className="mt-12">

@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { ShoppingCart, MapPin } from 'lucide-react';
-import { LogoWordmark } from '@/assets/logo/LogoWordmark';
 import { SearchBar } from './SearchBar';
 import { CategoryNav } from './CategoryNav';
 import { useCartStore } from '@/store/cartStore';
 import { useUiStore } from '@/store/uiStore';
+import { themeConfig } from '@/theme';
 
 export function Header() {
   const itemsCount = useCartStore((s) => s.itemsCount());
@@ -23,7 +23,7 @@ export function Header() {
 
       <div className="container-page flex items-center gap-4 py-3 sm:gap-6">
         <Link to="/" className="shrink-0">
-          <LogoWordmark size="sm" />
+          <themeConfig.Logo size="sm" />
         </Link>
 
         <SearchBar className="hidden flex-1 sm:block" />

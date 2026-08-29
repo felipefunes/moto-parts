@@ -4,7 +4,7 @@ import type { Address, PaymentResult } from '@/types';
 import { CHECKOUT_ADDRESS_STORAGE_KEY } from '@/lib/constants';
 import { useCart } from '@/hooks/useCart';
 import { cartService, orderService } from '@/services';
-import { PRODUCTS } from '@/data/products';
+import { PRODUCTS } from '@theme-active/data/products';
 import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 import { PaymentMockForm } from '@/components/checkout/PaymentMockForm';
 import { OrderSummary } from '@/components/checkout/OrderSummary';

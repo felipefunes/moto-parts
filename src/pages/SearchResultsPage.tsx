@@ -38,7 +38,7 @@ export function SearchResultsPage() {
       <h1 className="mt-3 font-heading text-2xl font-bold text-text-primary">
         Resultados para <span className="text-brand-cyan">&ldquo;{query}&rdquo;</span>
       </h1>
-      {result && <p className="text-sm text-text-muted">{result.total} repuestos encontrados</p>}
+      {result && <p className="text-sm text-text-muted">{result.total} productos encontrados</p>}
 
       <div className="mt-6 flex flex-col gap-8 lg:flex-row">
         <div className="hidden lg:block lg:w-64 lg:shrink-0">

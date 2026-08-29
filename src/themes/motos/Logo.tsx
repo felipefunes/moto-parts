@@ -1,9 +1,11 @@
+import { clsx } from 'clsx';
+
 /**
  * Marca original (no deriva de ningún logo real de MotoGP/cripto): tres barras
  * diagonales ascendentes tipo tacómetro/ecualizador con gradiente de marca,
  * más un punto "spark" que evoca una bujía / chispa de encendido.
  */
-export function LogoMark({ size = 32, className }: { size?: number; className?: string }) {
+function LogoMark({ size = 32, className }: { size?: number; className?: string }) {
   return (
     <svg
       width={size}
@@ -26,5 +28,35 @@ export function LogoMark({ size = 32, className }: { size?: number; className?: 
       <rect x="33" y="8" width="7" height="32" rx="1.5" fill="url(#rpm-logo-gradient)" />
       <circle cx="38.5" cy="6.5" r="2.6" fill="#C6FF00" />
     </svg>
+  );
+}
+
+export function Logo({
+  size = 'md',
+  showTagline = false,
+  className,
+}: {
+  size?: 'sm' | 'md' | 'lg';
+  showTagline?: boolean;
+  className?: string;
+}) {
+  const markSize = size === 'lg' ? 44 : size === 'md' ? 32 : 26;
+  const textSize = size === 'lg' ? 'text-3xl' : size === 'md' ? 'text-xl' : 'text-base';
+
+  return (
+    <div className={clsx('flex items-center gap-2.5', className)}>
+      <LogoMark size={markSize} />
+      <div className="leading-none">
+        <span className={clsx('font-display font-black tracking-wide text-gradient-brand', textSize)}>
+          RPM
+        </span>
+        <span className={clsx('font-heading font-bold tracking-wide text-text-primary', textSize)}> PARTS</span>
+        {showTagline && (
+          <div className="mt-0.5 font-heading text-xs uppercase tracking-[0.2em] text-text-muted">
+            Repuestos de moto
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

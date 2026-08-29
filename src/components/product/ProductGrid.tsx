@@ -17,10 +17,10 @@ export function ProductGrid({ products, loading }: { products: Product[]; loadin
     return (
       <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-20 text-center">
         <p className="font-heading text-lg font-semibold text-text-primary">
-          No encontramos repuestos con esos filtros
+          No encontramos productos con esos filtros
         </p>
         <p className="mt-1 text-sm text-text-secondary">
-          Prueba ajustando el precio, la marca o el modelo de moto.
+          Prueba ajustando el precio o la marca.
         </p>
       </div>
     );

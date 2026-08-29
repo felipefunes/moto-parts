@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { clsx } from 'clsx';
-import { TOP_LEVEL_CATEGORIES, getSubcategories } from '@/data/categories';
+import { TOP_LEVEL_CATEGORIES, getSubcategories } from '@theme-active/data/categories';
 import { getCategoryIcon } from '@/lib/categoryIcons';
 
 /**

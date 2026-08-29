@@ -14,6 +14,9 @@ import {
   Fuel,
   Gauge,
   Wrench,
+  ShoppingBag,
+  Package,
+  Gem,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -33,6 +36,9 @@ export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   fuel: Fuel,
   gauge: Gauge,
   wrench: Wrench,
+  'shopping-bag': ShoppingBag,
+  package: Package,
+  gem: Gem,
 };
 
 export function getCategoryIcon(iconKey?: string): LucideIcon {

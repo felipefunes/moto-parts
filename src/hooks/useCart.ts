@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useCartStore } from '@/store/cartStore';
-import { PRODUCTS } from '@/data/products';
+import { PRODUCTS } from '@theme-active/data/products';
 import type { Product } from '@/types';
 
 export interface CartLine {
