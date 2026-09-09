@@ -30,3 +30,6 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
+
+# Claude Code
+CLAUDE.local.md
