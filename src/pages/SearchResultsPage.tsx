@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { catalogService, type PaginatedProducts } from '@/services';
+import { catalogService } from '@/services';
 import { useProductFilters } from '@/hooks/useProductFilters';
+import { useAsyncData } from '@/hooks/useAsyncData';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { FilterSidebar } from '@/components/filters/FilterSidebar';
 import { MobileFilterSheet } from '@/components/filters/MobileFilterSheet';
@@ -14,23 +14,9 @@ export function SearchResultsPage() {
   const { filters, setBrands, setMotorcycleBrands, setPriceRange, setSort, resetFilters } =
     useProductFilters();
 
-  const [result, setResult] = useState<PaginatedProducts | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
-    catalogService.getProducts({ ...filters, query, pageSize: 24 }).then((res) => {
-      if (active) {
-        setResult(res);
-        setLoading(false);
-      }
-    });
-    return () => {
-      active = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, JSON.stringify(filters)]);
+  const { data: result, loading } = useAsyncData(`${query}:${JSON.stringify(filters)}`, () =>
+    catalogService.getProducts({ ...filters, query, pageSize: 24 }),
+  );
 
   return (
     <div className="container-page py-6">

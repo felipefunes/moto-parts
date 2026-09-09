@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Minus, Plus, ShoppingCart, Zap } from 'lucide-react';
 import type { Product } from '@/types';
 import { catalogService } from '@/services';
+import { useAsyncData } from '@/hooks/useAsyncData';
 import { useCartStore } from '@/store/cartStore';
 import { useUiStore } from '@/store/uiStore';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
@@ -20,36 +21,33 @@ import { NotFoundPage } from './NotFoundPage';
 export function ProductDetailPage() {
   const { productSlug = '' } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState<Product | undefined>(undefined);
   const [related, setRelated] = useState<Product[]>([]);
   const [quantity, setQuantity] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+  const [prevProductSlug, setPrevProductSlug] = useState(productSlug);
+
+  if (productSlug !== prevProductSlug) {
+    setPrevProductSlug(productSlug);
+    setQuantity(1);
+  }
 
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useUiStore((s) => s.openCart);
 
+  const { data: product, loading } = useAsyncData(productSlug, () =>
+    catalogService.getProductBySlug(productSlug),
+  );
+  const notFound = !loading && product === undefined;
+
   useEffect(() => {
+    if (!product) return;
     let active = true;
-    setLoading(true);
-    setQuantity(1);
-    catalogService.getProductBySlug(productSlug).then((p) => {
-      if (!active) return;
-      if (!p) {
-        setNotFound(true);
-        setLoading(false);
-        return;
-      }
-      setProduct(p);
-      setLoading(false);
-      catalogService.getRelatedProducts(p, 4).then((rel) => {
-        if (active) setRelated(rel);
-      });
+    catalogService.getRelatedProducts(product, 4).then((rel) => {
+      if (active) setRelated(rel);
     });
     return () => {
       active = false;
     };
-  }, [productSlug]);
+  }, [product]);
 
   if (notFound) return <NotFoundPage />;
   if (loading || !product) {
