@@ -2,7 +2,37 @@ services:
   - type: web
     name: moto-parts-frontend
     runtime: static
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci && npm run build:motos
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+
+  - type: web
+    name: rw-carteras-frontend
+    runtime: static
+    buildCommand: npm ci && npm run build:carteras
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+
+  - type: web
+    name: moto-parts-carteras
+    runtime: static
+    buildCommand: npm ci && npm run build:carteras
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: false
     routes:
