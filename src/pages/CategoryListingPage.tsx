@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import type { Category, Product } from '@/types';
-import { catalogService, type PaginatedProducts } from '@/services';
+import type { Product } from '@/types';
+import { catalogService } from '@/services';
 import { useProductFilters } from '@/hooks/useProductFilters';
+import { useAsyncData } from '@/hooks/useAsyncData';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { FilterSidebar } from '@/components/filters/FilterSidebar';
 import { MobileFilterSheet } from '@/components/filters/MobileFilterSheet';
 import { SortDropdown } from '@/components/filters/SortDropdown';
 import { ProductGrid } from '@/components/product/ProductGrid';
-import { getCategoryIcon } from '@/lib/categoryIcons';
+import { renderCategoryIcon } from '@/lib/categoryIcons';
 import { NotFoundPage } from './NotFoundPage';
 
 export function CategoryListingPage() {
@@ -16,57 +16,26 @@ export function CategoryListingPage() {
   const { filters, setBrands, setMotorcycleBrands, setPriceRange, setSort, setPage, resetFilters } =
     useProductFilters();
 
-  const [category, setCategory] = useState<Category | undefined>();
-  const [subcategory, setSubcategory] = useState<Category | undefined>();
-  const [subcategories, setSubcategories] = useState<Category[]>([]);
-  const [result, setResult] = useState<PaginatedProducts | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
+  const categoryKey = `${categorySlug}:${subSlug ?? ''}`;
+  const { data: categoryData, loading: categoryLoading } = useAsyncData(categoryKey, () =>
     Promise.all([
       catalogService.getCategoryBySlug(categorySlug),
       catalogService.getSubcategories(categorySlug),
       subSlug ? catalogService.getSubcategoryBySlug(categorySlug, subSlug) : Promise.resolve(undefined),
-    ]).then(([cat, subs, sub]) => {
-      if (!active) return;
-      if (!cat) {
-        setNotFound(true);
-        setLoading(false);
-        return;
-      }
-      setCategory(cat);
-      setSubcategories(subs);
-      setSubcategory(sub);
-    });
-    return () => {
-      active = false;
-    };
-  }, [categorySlug, subSlug]);
+    ]).then(([category, subcategories, subcategory]) => ({ category, subcategories, subcategory })),
+  );
 
-  useEffect(() => {
-    if (!category) return;
-    let active = true;
-    setLoading(true);
-    catalogService
-      .getProducts({ ...filters, categorySlug, subcategorySlug: subSlug, pageSize: 12 })
-      .then((res) => {
-        if (active) {
-          setResult(res);
-          setLoading(false);
-        }
-      });
-    return () => {
-      active = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, categorySlug, subSlug, JSON.stringify(filters)]);
+  const category = categoryData?.category;
+  const subcategory = categoryData?.subcategory;
+  const subcategories = categoryData?.subcategories ?? [];
+  const notFound = !categoryLoading && categoryData !== undefined && !category;
+
+  const { data: result, loading } = useAsyncData(`${categoryKey}:${JSON.stringify(filters)}`, () =>
+    catalogService.getProducts({ ...filters, categorySlug, subcategorySlug: subSlug, pageSize: 12 }),
+  );
 
   if (notFound) return <NotFoundPage />;
 
-  const Icon = getCategoryIcon(category?.iconKey);
   const products: Product[] = result?.items ?? [];
 
   return (
@@ -80,7 +49,7 @@ export function CategoryListingPage() {
 
       <div className="mt-3 flex items-center gap-3">
         <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-violet/15 text-brand-cyan">
-          <Icon size={20} />
+          {renderCategoryIcon(category?.iconKey, { size: 20 })}
         </span>
         <div>
           <h1 className="font-heading text-2xl font-bold text-text-primary">
