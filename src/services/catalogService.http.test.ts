@@ -22,6 +22,33 @@ describe('catalogServiceHttp', () => {
     ]);
   });
 
+  it('gets the full category tree from a single GET /categories call', async () => {
+    let requestCount = 0;
+    server.use(
+      http.get(`${API_BASE_URL}/categories`, () => {
+        requestCount += 1;
+        return HttpResponse.json([catalogFixtures.categoryDetail]);
+      }),
+    );
+
+    const tree = await catalogServiceHttp.getCategoryTree();
+
+    expect(requestCount).toBe(1);
+    expect(tree).toEqual([
+      {
+        id: 'motor',
+        slug: 'motor',
+        name: 'Motor',
+        parentId: null,
+        iconKey: 'cog',
+        imageUrl: expect.any(String),
+        subcategories: [
+          { id: 'motor-pistones-anillos', slug: 'pistones-anillos', name: 'Pistones y anillos', parentId: 'motor' },
+        ],
+      },
+    ]);
+  });
+
   it('returns undefined for a category slug the backend 404s on', async () => {
     await expect(catalogServiceHttp.getCategoryBySlug('no-existe')).resolves.toBeUndefined();
   });

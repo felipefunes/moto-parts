@@ -14,7 +14,6 @@ import { StockBadge } from '@/components/product/StockBadge';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { getCategoryBySlug, getSubcategoryBySlug } from '@theme-active/data/categories';
 import { themeConfig } from '@/theme';
 import { NotFoundPage } from './NotFoundPage';
 
@@ -38,6 +37,18 @@ export function ProductDetailPage() {
   );
   const notFound = !loading && product === undefined;
 
+  const categoryKey = product ? `${product.categoryId}:${product.subcategoryId}` : '';
+  const { data: categoryData } = useAsyncData(categoryKey, () => {
+    if (!product) return Promise.resolve({ category: undefined, subcategory: undefined });
+    const subSlug = product.subcategoryId.replace(`${product.categoryId}-`, '');
+    return Promise.all([
+      catalogService.getCategoryBySlug(product.categoryId),
+      catalogService.getSubcategoryBySlug(product.categoryId, subSlug),
+    ]).then(([category, subcategory]) => ({ category, subcategory }));
+  });
+  const category = categoryData?.category;
+  const subcategory = categoryData?.subcategory;
+
   useEffect(() => {
     if (!product) return;
     let active = true;
@@ -53,9 +64,6 @@ export function ProductDetailPage() {
   if (loading || !product) {
     return <div className="container-page py-16 text-center text-text-muted">Cargando producto…</div>;
   }
-
-  const category = getCategoryBySlug(product.categoryId);
-  const subcategory = getSubcategoryBySlug(product.categoryId, product.subcategoryId.replace(`${product.categoryId}-`, ''));
 
   function handleAddToCart() {
     if (!product) return;

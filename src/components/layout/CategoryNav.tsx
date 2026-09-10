@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { clsx } from 'clsx';
-import { TOP_LEVEL_CATEGORIES, getSubcategories } from '@theme-active/data/categories';
+import { catalogService } from '@/services';
+import { useAsyncData } from '@/hooks/useAsyncData';
 import { getCategoryIcon } from '@/lib/categoryIcons';
 
 /**
@@ -19,6 +20,8 @@ export function CategoryNav({ className }: { className?: string }) {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
   const navRef = useRef<HTMLElement>(null);
+  const { data: categoryTree } = useAsyncData('category-tree', () => catalogService.getCategoryTree());
+  const topLevelCategories = categoryTree ?? [];
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -42,15 +45,15 @@ export function CategoryNav({ className }: { className?: string }) {
     setOpenSlug(slug);
   }
 
-  const openCategory = TOP_LEVEL_CATEGORIES.find((c) => c.slug === openSlug);
-  const openSubcategories = openCategory ? getSubcategories(openCategory.slug) : [];
+  const openCategory = topLevelCategories.find((c) => c.slug === openSlug);
+  const openSubcategories = openCategory?.subcategories ?? [];
 
   return (
     <nav ref={navRef} className={clsx('relative border-b border-border bg-bg-secondary/60', className)}>
       <div className="container-page scrollbar-none flex items-center gap-1 overflow-x-auto py-1">
-        {TOP_LEVEL_CATEGORIES.map((category) => {
+        {topLevelCategories.map((category) => {
           const Icon = getCategoryIcon(category.iconKey);
-          const hasSubcategories = getSubcategories(category.slug).length > 0;
+          const hasSubcategories = category.subcategories.length > 0;
           const isOpen = openSlug === category.slug;
           return (
             <div

@@ -18,6 +18,8 @@ export function SearchResultsPage() {
     catalogService.getProducts({ ...filters, query, pageSize: 24 }),
   );
 
+  const { data: brands } = useAsyncData('available-brands', () => catalogService.getAvailableBrands());
+
   return (
     <div className="container-page py-6">
       <Breadcrumbs items={[{ label: `Resultados para "${query}"` }]} />
@@ -30,6 +32,7 @@ export function SearchResultsPage() {
         <div className="hidden lg:block lg:w-64 lg:shrink-0">
           <FilterSidebar
             filters={filters}
+            brands={brands ?? []}
             onBrandsChange={setBrands}
             onMotorcycleBrandsChange={setMotorcycleBrands}
             onPriceChange={setPriceRange}
@@ -40,6 +43,7 @@ export function SearchResultsPage() {
           <div className="mb-4 flex items-center justify-between lg:justify-end">
             <MobileFilterSheet
               filters={filters}
+              brands={brands ?? []}
               onBrandsChange={setBrands}
               onMotorcycleBrandsChange={setMotorcycleBrands}
               onPriceChange={setPriceRange}

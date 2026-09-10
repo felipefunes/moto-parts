@@ -181,12 +181,6 @@ export interface components {
             label?: string;
             value?: string;
         };
-        CategorySummaryResponse: {
-            slug?: string;
-            name?: string;
-            iconKey?: string | null;
-            imageUrl?: string | null;
-        };
         CategoryDetailResponse: {
             slug?: string;
             name?: string;
@@ -342,7 +336,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["CategorySummaryResponse"][];
+                    "*/*": components["schemas"]["CategoryDetailResponse"][];
                 };
             };
         };

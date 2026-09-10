@@ -42,7 +42,7 @@ const product = {
 };
 
 export const catalogHandlers = [
-  http.get(`${API_BASE_URL}/categories`, () => HttpResponse.json([category])),
+  http.get(`${API_BASE_URL}/categories`, () => HttpResponse.json([categoryDetail])),
 
   http.get(`${API_BASE_URL}/categories/:slug`, ({ params }) => {
     if (params.slug !== 'motor') return new HttpResponse(null, { status: 404 });

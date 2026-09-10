@@ -1,16 +1,9 @@
 import type { Category, Product, ProductFilters } from '@/types';
 import { fetchJson, fetchJsonOrNull } from './api/httpClient';
-import {
-  mapCategoryDetailAsTopLevel,
-  mapProduct,
-  mapSubcategory,
-  mapTopLevelCategory,
-  type ApiProduct,
-} from './api/catalogMappers';
+import { mapProduct, mapSubcategory, mapTopLevelCategory, type ApiProduct } from './api/catalogMappers';
 import type { components } from './api/generated/types';
-import type { CatalogService, PaginatedProducts } from './catalogService.types';
+import type { CatalogService, CategoryTreeNode, PaginatedProducts } from './catalogService.types';
 
-type ApiCategorySummary = components['schemas']['CategorySummaryResponse'];
 type ApiCategoryDetail = components['schemas']['CategoryDetailResponse'];
 type ApiPaginatedProducts = Omit<components['schemas']['PaginatedProductsResponse'], 'items'> & {
   items: ApiProduct[];
@@ -22,13 +15,21 @@ async function fetchCategoryDetail(slug: string): Promise<ApiCategoryDetail | nu
 
 export const catalogServiceHttp: CatalogService = {
   getTopLevelCategories: async () => {
-    const categories = await fetchJson<ApiCategorySummary[]>('/categories');
+    const categories = await fetchJson<ApiCategoryDetail[]>('/categories');
     return categories.map(mapTopLevelCategory);
+  },
+
+  getCategoryTree: async (): Promise<CategoryTreeNode[]> => {
+    const categories = await fetchJson<ApiCategoryDetail[]>('/categories');
+    return categories.map((c) => ({
+      ...mapTopLevelCategory(c),
+      subcategories: (c.subcategories ?? []).map((sub) => mapSubcategory(c.slug!, sub)),
+    }));
   },
 
   getCategoryBySlug: async (slug: string): Promise<Category | undefined> => {
     const detail = await fetchCategoryDetail(slug);
-    return detail ? mapCategoryDetailAsTopLevel(detail) : undefined;
+    return detail ? mapTopLevelCategory(detail) : undefined;
   },
 
   getSubcategories: async (parentSlug: string): Promise<Category[]> => {

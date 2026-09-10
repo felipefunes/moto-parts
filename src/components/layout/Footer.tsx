@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Truck, ShieldCheck, CreditCard, Undo2 } from 'lucide-react';
-import { TOP_LEVEL_CATEGORIES } from '@theme-active/data/categories';
+import { catalogService } from '@/services';
+import { useAsyncData } from '@/hooks/useAsyncData';
 import { themeConfig } from '@/theme';
 
 const TRUST_ITEMS = [
@@ -11,6 +12,8 @@ const TRUST_ITEMS = [
 ];
 
 export function Footer() {
+  const { data: categories } = useAsyncData('top-level-categories', () => catalogService.getTopLevelCategories());
+
   return (
     <footer className="mt-16 border-t border-border bg-bg-secondary">
       <div className="container-page grid grid-cols-2 gap-6 py-8 sm:grid-cols-4">
@@ -37,7 +40,7 @@ export function Footer() {
               Categorías
             </h4>
             <ul className="flex flex-col gap-2">
-              {TOP_LEVEL_CATEGORIES.slice(0, 6).map((cat) => (
+              {(categories ?? []).slice(0, 6).map((cat) => (
                 <li key={cat.id}>
                   <Link to={`/categoria/${cat.slug}`} className="text-sm text-text-secondary hover:text-brand-cyan">
                     {cat.name}

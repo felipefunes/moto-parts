@@ -67,6 +67,9 @@ function applyFilters(products: Product[], filters: ProductFilters): Product[] {
 export const catalogServiceMock: CatalogService = {
   getTopLevelCategories: () => mockRequest(TOP_LEVEL_CATEGORIES),
 
+  getCategoryTree: () =>
+    mockRequest(TOP_LEVEL_CATEGORIES.map((c) => ({ ...c, subcategories: getSubcategories(c.slug) }))),
+
   getCategoryBySlug: (slug: string): Promise<Category | undefined> =>
     mockRequest(getCategoryBySlug(slug)),
 
