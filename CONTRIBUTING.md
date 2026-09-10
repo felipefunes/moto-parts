@@ -112,6 +112,26 @@ funciones (de leer `@theme-active/data/*` a hacer `fetch`), sin tocar componente
 Mantené esa disciplina al agregar funcionalidad nueva: los componentes no deberían importar
 `@theme-active/data/*` directamente, solo `src/services/*`.
 
+**Catalog: mock vs. real HTTP.** `catalogService.ts` is the only entry point components import;
+internally it picks between `catalogService.mock.ts` (data from `@theme-active/data/*`) and
+`catalogService.http.ts` (fetches against `rpm-parts-backend`) based on whether
+`VITE_API_BASE_URL` is set. Both implementations satisfy the same `CatalogService` type
+(`catalogService.types.ts`), so they can't silently drift apart. To test against the real backend
+locally: run it (`docker compose up -d && ./gradlew bootRun` in `rpm-parts-backend`) and set
+`VITE_API_BASE_URL=http://localhost:8080` in a `.env.local` (gitignored -- don't add it to
+`.env.motos`/`.env.carteras` until real staging exists).
+
+**Syncing generated types**: `npm run sync:api-types` regenerates
+`src/services/api/generated/types.ts` from `/v3/api-docs` on the backend running locally. Run it
+by hand whenever this repo moves to point at a different backend version, not on every build --
+see `BACKEND_API_VERSION` in `src/services/api/`. The generated file is committed.
+
+**Watch out for generated `isX` booleans**: springdoc mis-reports the Kotlin fields
+`isPrimary`/`isFeatured` as `primary`/`featured` in the OpenAPI schema (an introspection bug --
+confirmed with `curl` that the real JSON does say `isPrimary`/`isFeatured`). `catalogMappers.ts`
+corrects this by hand with a comment explaining why -- don't blindly trust the generated file for
+those two fields until it's fixed upstream.
+
 ## 8. Cómo funciona el sistema de temas
 
 Este repo dejó de ser una sola tienda (RPM Parts) para ser una plataforma con **temas**

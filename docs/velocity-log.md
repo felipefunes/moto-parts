@@ -14,3 +14,4 @@ number.
 | Date | Feature (PR) | Estimated | Real | Notes |
 |---|---|---|---|---|
 | 2026-09-10 | Vitest + RTL + MSW harness ([#24](https://github.com/felipefunes/moto-parts/pull/24)) | — (no estimate given) | not meaningful | The "previous PR merged" anchor (#22, ~19h earlier) would overstate this — that whole gap was spent on `rpm-parts-backend` work, not on this repo. First entry in this log; no better anchor available for a single-commit PR after a cross-repo gap. |
+| 2026-09-10 | HTTP-backed catalogService behind `VITE_API_BASE_URL` ([#25](https://github.com/felipefunes/moto-parts/pull/25)) | — (no estimate given) | ~21 min (previous PR #24 merged 19:56 UTC → this one opened 20:17 UTC) | Includes a short side trip to `rpm-parts-backend` (tagging `v0.1.0` so the frontend had a real version to sync against) — a few seconds of the window, not worth a bigger caveat. |
