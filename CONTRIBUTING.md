@@ -112,25 +112,25 @@ funciones (de leer `@theme-active/data/*` a hacer `fetch`), sin tocar componente
 Mantené esa disciplina al agregar funcionalidad nueva: los componentes no deberían importar
 `@theme-active/data/*` directamente, solo `src/services/*`.
 
-**Catálogo: mock vs. HTTP real.** `catalogService.ts` es el único punto de entrada que los
-componentes importan; internamente elige entre `catalogService.mock.ts` (datos de
-`@theme-active/data/*`) y `catalogService.http.ts` (fetch contra `rpm-parts-backend`) según si
-`VITE_API_BASE_URL` está seteada. Ambas implementaciones satisfacen el mismo tipo `CatalogService`
-(`catalogService.types.ts`), así que no pueden divergir en silencio. Para probar contra el backend
-real en local: levantalo (`docker compose up -d && ./gradlew bootRun` en `rpm-parts-backend`) y
-seteá `VITE_API_BASE_URL=http://localhost:8080` en un `.env.local` (gitignored, no lo agregues a
-`.env.motos`/`.env.carteras` hasta que exista staging real).
+**Catalog: mock vs. real HTTP.** `catalogService.ts` is the only entry point components import;
+internally it picks between `catalogService.mock.ts` (data from `@theme-active/data/*`) and
+`catalogService.http.ts` (fetches against `rpm-parts-backend`) based on whether
+`VITE_API_BASE_URL` is set. Both implementations satisfy the same `CatalogService` type
+(`catalogService.types.ts`), so they can't silently drift apart. To test against the real backend
+locally: run it (`docker compose up -d && ./gradlew bootRun` in `rpm-parts-backend`) and set
+`VITE_API_BASE_URL=http://localhost:8080` in a `.env.local` (gitignored -- don't add it to
+`.env.motos`/`.env.carteras` until real staging exists).
 
-**Sincronizar los tipos generados**: `npm run sync:api-types` regenera
-`src/services/api/generated/types.ts` desde `/v3/api-docs` del backend corriendo en local. Se
-corre a mano cada vez que este repo pasa a apuntar a otra versión del backend, no en cada build
--- ver `BACKEND_API_VERSION` en `src/services/api/`. El archivo generado se commitea.
+**Syncing generated types**: `npm run sync:api-types` regenerates
+`src/services/api/generated/types.ts` from `/v3/api-docs` on the backend running locally. Run it
+by hand whenever this repo moves to point at a different backend version, not on every build --
+see `BACKEND_API_VERSION` in `src/services/api/`. The generated file is committed.
 
-**Cuidado con los booleanos `isX` generados**: springdoc mal-reporta los campos Kotlin
-`isPrimary`/`isFeatured` como `primary`/`featured` en el schema OpenAPI (bug de introspección,
-confirmado con `curl` que el JSON real sí dice `isPrimary`/`isFeatured`). `catalogMappers.ts`
-corrige esto a mano con un comentario explicando por qué -- no confíes ciegamente en el archivo
-generado para esos dos campos hasta que se resuelva río arriba.
+**Watch out for generated `isX` booleans**: springdoc mis-reports the Kotlin fields
+`isPrimary`/`isFeatured` as `primary`/`featured` in the OpenAPI schema (an introspection bug --
+confirmed with `curl` that the real JSON does say `isPrimary`/`isFeatured`). `catalogMappers.ts`
+corrects this by hand with a comment explaining why -- don't blindly trust the generated file for
+those two fields until it's fixed upstream.
 
 ## 8. Cómo funciona el sistema de temas
 

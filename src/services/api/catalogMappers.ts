@@ -19,6 +19,11 @@ export type ApiProduct = Omit<components['schemas']['ProductResponse'], 'images'
   isFeatured: boolean;
 };
 
+// Category.description is left undefined here: neither CategorySummaryResponse nor
+// CategoryDetailResponse exposes a description field -- the backend doesn't return one at all,
+// unlike the mock (whose theme SEED data always has one). No current component reads
+// category.description, so this is a dormant gap, not a live bug; if that changes, the backend
+// needs a description column/field before this mapper can fill it in.
 export function mapTopLevelCategory(api: ApiCategorySummary): Category {
   return {
     id: api.slug!,
