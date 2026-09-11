@@ -42,3 +42,24 @@ Opens the last run's HTML report.
 Per the original catalog plan: a full two-repo E2E run is too heavy/flaky to gate every PR for a
 one-person team. The fast per-PR gate stays each repo's own unit/integration suite. This harness
 is meant to run post-merge on `main`, once a decision is made on cross-repo checkout auth.
+
+## Known gaps / planned next scenarios
+
+`checkout.spec.ts` today covers exactly one path (one product, quantity 1, card accepted).
+From the PR #27 review, not yet built — tracked here rather than forgotten:
+
+- Cart persistence across a reload (the direct proof the product-snapshot fix works).
+- The `version: 2` localStorage migration wiping a v1-shaped cart instead of crashing.
+- Rejected payment (card ending in `0000`): no order created, cart not cleared, retry works.
+- The three checkout route guards (empty cart → `/carrito`, no address → `/checkout/direccion`).
+- Quantity mutation from the cart (merge on re-add, decrement to removal, header badge).
+- Shipping threshold, cart-cleared-after-order, confirmation page reload/unknown order,
+  multi-line orders, empty states.
+- Stock cap and a no-images product, once the seed has a low-stock and an image-less fixture.
+
+**Planned split, not yet done**: the cart/checkout-state scenarios above (persistence, migration,
+route guards, empty states) don't need the real backend at all — they're client-only state, so
+they could run against `npm run dev:motos` alone (mock catalog, no docker-compose) in a fast spec
+that's cheap enough to gate every PR, leaving only the catalog-browsing specs on this heavy
+two-repo run. Worth doing before this file grows much further, but deliberately out of scope for
+the PR that introduced this harness.
