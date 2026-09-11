@@ -1,10 +1,9 @@
 import { test, expect, type Page } from '@playwright/test';
+import { CART_STORAGE_KEY, ORDERS_STORAGE_KEY } from '../../src/lib/constants';
 
 // Cart/checkout client-state behavior -- deliberately mock mode (no VITE_API_BASE_URL, no
 // backend), since none of this depends on where the catalog data comes from. See
 // e2e/playwright.fast.config.ts and e2e/README.md.
-
-const CART_STORAGE_KEY = 'ecommerce-cart';
 
 async function goToMotorListing(page: Page) {
   await page.goto('/');
@@ -208,7 +207,7 @@ test.describe('order lifecycle', () => {
     // URL right away, which could pass on a technicality if it runs before that delayed
     // navigation fires) is what actually proves no order got created.
     await page.waitForTimeout(500);
-    const orders = await page.evaluate((key) => localStorage.getItem(key), 'ecommerce-orders');
+    const orders = await page.evaluate((key) => localStorage.getItem(key), ORDERS_STORAGE_KEY);
     expect(orders === null ? [] : JSON.parse(orders)).toHaveLength(0);
     await expect(page).toHaveURL(/\/checkout\/pago$/);
 

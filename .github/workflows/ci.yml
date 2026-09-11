@@ -20,7 +20,19 @@ jobs:
       - run: npm run test
       - run: npm run build:motos
       - run: npm run build:carteras
-      - run: npx playwright install --with-deps chromium
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+      # Only the browser binary download is worth caching -- install-deps (apt packages) is fast
+      # and needs to run either way to make sure the runner's OS dependencies are actually there.
+      - run: npx playwright install chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - run: npx playwright install-deps chromium
       - run: npm run test:e2e:fast
       - uses: actions/upload-artifact@v4
         if: failure()
