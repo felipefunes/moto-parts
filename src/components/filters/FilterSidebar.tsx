@@ -1,4 +1,3 @@
-import { PRODUCT_BRANDS } from '@theme-active/data/products';
 import { themeConfig } from '@/theme';
 import { FilterCheckboxGroup } from './FilterCheckboxGroup';
 import { PriceRangeFilter } from './PriceRangeFilter';
@@ -6,12 +5,14 @@ import type { ProductFilters } from '@/types';
 
 export function FilterSidebar({
   filters,
+  brands,
   onBrandsChange,
   onMotorcycleBrandsChange,
   onPriceChange,
   onReset,
 }: {
   filters: ProductFilters;
+  brands: string[];
   onBrandsChange: (brands: string[]) => void;
   onMotorcycleBrandsChange: (brands: string[]) => void;
   onPriceChange: (min?: number, max?: number) => void;
@@ -28,7 +29,7 @@ export function FilterSidebar({
       <PriceRangeFilter min={filters.priceMin} max={filters.priceMax} onChange={onPriceChange} />
       <FilterCheckboxGroup
         title="Marca"
-        options={PRODUCT_BRANDS}
+        options={brands}
         selected={filters.brands ?? []}
         onChange={onBrandsChange}
       />

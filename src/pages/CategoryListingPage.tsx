@@ -34,6 +34,8 @@ export function CategoryListingPage() {
     catalogService.getProducts({ ...filters, categorySlug, subcategorySlug: subSlug, pageSize: 12 }),
   );
 
+  const { data: brands } = useAsyncData('available-brands', () => catalogService.getAvailableBrands());
+
   if (notFound) return <NotFoundPage />;
 
   const products: Product[] = result?.items ?? [];
@@ -77,6 +79,7 @@ export function CategoryListingPage() {
         <div className="hidden lg:block lg:w-64 lg:shrink-0">
           <FilterSidebar
             filters={filters}
+            brands={brands ?? []}
             onBrandsChange={setBrands}
             onMotorcycleBrandsChange={setMotorcycleBrands}
             onPriceChange={setPriceRange}
@@ -88,6 +91,7 @@ export function CategoryListingPage() {
           <div className="mb-4 flex items-center justify-between lg:justify-end">
             <MobileFilterSheet
               filters={filters}
+              brands={brands ?? []}
               onBrandsChange={setBrands}
               onMotorcycleBrandsChange={setMotorcycleBrands}
               onPriceChange={setPriceRange}

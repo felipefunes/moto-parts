@@ -19,6 +19,7 @@ function countActiveFilters(filters: ProductFilters): number {
  */
 export function MobileFilterSheet(props: {
   filters: ProductFilters;
+  brands: string[];
   onBrandsChange: (brands: string[]) => void;
   onMotorcycleBrandsChange: (brands: string[]) => void;
   onPriceChange: (min?: number, max?: number) => void;
@@ -65,6 +66,7 @@ export function MobileFilterSheet(props: {
 
         <FilterSidebar
           filters={props.filters}
+          brands={props.brands}
           onBrandsChange={props.onBrandsChange}
           onMotorcycleBrandsChange={props.onMotorcycleBrandsChange}
           onPriceChange={props.onPriceChange}

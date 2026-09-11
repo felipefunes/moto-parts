@@ -1,7 +1,6 @@
 import type { Category, Currency, Product, ProductCondition } from '@/types';
 import type { components } from './generated/types';
 
-type ApiCategorySummary = components['schemas']['CategorySummaryResponse'];
 type ApiCategoryDetail = components['schemas']['CategoryDetailResponse'];
 type ApiSubcategory = components['schemas']['SubcategoryResponse'];
 
@@ -19,12 +18,12 @@ export type ApiProduct = Omit<components['schemas']['ProductResponse'], 'images'
   isFeatured: boolean;
 };
 
-// Category.description is left undefined here: neither CategorySummaryResponse nor
-// CategoryDetailResponse exposes a description field -- the backend doesn't return one at all,
-// unlike the mock (whose theme SEED data always has one). No current component reads
-// category.description, so this is a dormant gap, not a live bug; if that changes, the backend
-// needs a description column/field before this mapper can fill it in.
-export function mapTopLevelCategory(api: ApiCategorySummary): Category {
+// Category.description is left undefined here: CategoryDetailResponse doesn't expose a
+// description field -- the backend doesn't return one at all, unlike the mock (whose theme SEED
+// data always has one). No current component reads category.description, so this is a dormant
+// gap, not a live bug; if that changes, the backend needs a description column/field before this
+// mapper can fill it in.
+export function mapTopLevelCategory(api: ApiCategoryDetail): Category {
   return {
     id: api.slug!,
     slug: api.slug!,
@@ -33,10 +32,6 @@ export function mapTopLevelCategory(api: ApiCategorySummary): Category {
     iconKey: api.iconKey ?? undefined,
     imageUrl: api.imageUrl ?? undefined,
   };
-}
-
-export function mapCategoryDetailAsTopLevel(api: ApiCategoryDetail): Category {
-  return mapTopLevelCategory(api);
 }
 
 export function mapSubcategory(parentSlug: string, api: ApiSubcategory): Category {

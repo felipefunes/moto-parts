@@ -1,14 +1,17 @@
 import { Link } from 'react-router-dom';
-import { TOP_LEVEL_CATEGORIES } from '@theme-active/data/categories';
+import { catalogService } from '@/services';
+import { useAsyncData } from '@/hooks/useAsyncData';
 
 export function CategoryShowcase() {
+  const { data: categories } = useAsyncData('top-level-categories', () => catalogService.getTopLevelCategories());
+
   return (
     <section className="container-page py-12">
       <div className="mb-6 flex items-end justify-between">
         <h2 className="font-heading text-2xl font-bold text-text-primary">Compra por categoría</h2>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {TOP_LEVEL_CATEGORIES.map((category) => (
+        {(categories ?? []).map((category) => (
           <Link
             key={category.id}
             to={`/categoria/${category.slug}`}
