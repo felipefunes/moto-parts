@@ -19,16 +19,26 @@ test('browsing a category, filtering by brand, and opening a product all reflect
   await expect(page.getByText(/producto(s)? encontrado/)).toBeVisible();
 
   const productLinks = page.locator('a[href^="/producto/"]');
-  // Current seed: 4 products in Motor, 2 of them Mahle -- see docker-compose.e2e.yml /
-  // e2e/README.md for what this harness's data guarantees.
-  await expect(productLinks).toHaveCount(4);
+  const countBeforeFilter = await productLinks.count();
+  expect(countBeforeFilter).toBeGreaterThan(0);
 
   await page.getByRole('checkbox', { name: 'Mahle' }).click();
   await expect(page.getByRole('checkbox', { name: 'Mahle' })).toBeChecked();
-  // Waiting for the count to actually change (not just re-asserting the same "N encontrados"
-  // text, which would pass whether or not the filter did anything) is what proves brands=Mahle
-  // reached the backend and narrowed the result set.
-  await expect(productLinks).toHaveCount(2);
+  // Asserted relative to countBeforeFilter, not a literal, so this doesn't depend on nothing
+  // ever mutating the harness's database (see e2e/playwright.config.ts: the backend server now
+  // always starts from a fresh container, but this shouldn't need to assume that). Polling for
+  // the settled "narrowed but nonzero" state as one condition -- not toBeLessThan alone -- since
+  // the list transiently renders 0 items while the old ones unmount and the new ones haven't
+  // arrived yet, and toBeLessThan(countBeforeFilter) would happily match that empty transient.
+  await expect
+    .poll(
+      async () => {
+        const count = await productLinks.count();
+        return count > 0 && count < countBeforeFilter;
+      },
+      { message: 'waiting for the Mahle filter to settle on a narrowed, non-empty result set' },
+    )
+    .toBe(true);
 
   await productLinks.first().click();
   await expect(page).toHaveURL(/\/producto\//);

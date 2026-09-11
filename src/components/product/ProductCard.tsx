@@ -5,12 +5,14 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { PriceTag } from './PriceTag';
 import { RatingStars } from './RatingStars';
+import { ImagePlaceholder } from './ImagePlaceholder';
 import { useCartStore } from '@/store/cartStore';
 import { useUiStore } from '@/store/uiStore';
 
 export function ProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useUiStore((s) => s.openCart);
+  // A real backend product with no image rows maps to images: [] -- see ImagePlaceholder.
   const primaryImage = product.images.find((img) => img.isPrimary) ?? product.images[0];
 
   function handleAddToCart(e: React.MouseEvent) {
@@ -24,12 +26,16 @@ export function ProductCard({ product }: { product: Product }) {
     <Card className="group flex h-full flex-col overflow-hidden transition-colors hover:border-brand-blue/50">
       <Link to={`/producto/${product.slug}`} className="flex h-full flex-col">
         <div className="relative aspect-square overflow-hidden bg-bg-elevated">
-          <img
-            src={primaryImage.url}
-            alt={primaryImage.alt}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          {primaryImage ? (
+            <img
+              src={primaryImage.url}
+              alt={primaryImage.alt}
+              loading="lazy"
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <ImagePlaceholder className="h-full w-full" iconSize={32} />
+          )}
           <div className="absolute left-2 top-2 flex flex-col gap-1">
             {product.tags?.includes('oferta') && <Badge tone="danger">Oferta</Badge>}
             {product.tags?.includes('destacado') && <Badge tone="brand">Destacado</Badge>}

@@ -1,7 +1,7 @@
-import { ImageOff } from 'lucide-react';
 import type { CartLine } from '@/hooks/useCart';
 import { formatClp } from '@/lib/formatCurrency';
 import { Card } from '@/components/ui/Card';
+import { ImagePlaceholder } from '@/components/product/ImagePlaceholder';
 
 export function OrderSummary({
   lines,
@@ -25,9 +25,7 @@ export function OrderSummary({
               {image ? (
                 <img src={image.url} alt={image.alt} className="h-12 w-12 shrink-0 rounded-lg object-cover" />
               ) : (
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-bg-elevated text-text-muted">
-                  <ImageOff size={16} />
-                </div>
+                <ImagePlaceholder className="h-12 w-12 shrink-0 rounded-lg" iconSize={16} />
               )}
               <div className="flex-1">
                 <p className="line-clamp-1 text-xs font-medium text-text-primary">{line.product.name}</p>

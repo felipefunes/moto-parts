@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { ImageOff, Minus, Plus, Trash2 } from 'lucide-react';
+import { Minus, Plus, Trash2 } from 'lucide-react';
 import type { CartLine } from '@/hooks/useCart';
 import { formatClp } from '@/lib/formatCurrency';
 import { useCartStore } from '@/store/cartStore';
+import { ImagePlaceholder } from '@/components/product/ImagePlaceholder';
 
 export function CartLineItem({ line, compact }: { line: CartLine; compact?: boolean }) {
   const updateQuantity = useCartStore((s) => s.updateQuantity);
@@ -19,9 +20,7 @@ export function CartLineItem({ line, compact }: { line: CartLine; compact?: bool
         {image ? (
           <img src={image.url} alt={image.alt} className={imageClassName} />
         ) : (
-          <div className={`${imageClassName} flex items-center justify-center bg-bg-elevated text-text-muted`}>
-            <ImageOff size={compact ? 20 : 28} />
-          </div>
+          <ImagePlaceholder className={imageClassName} iconSize={compact ? 20 : 28} />
         )}
       </Link>
       <div className="flex flex-1 flex-col justify-between">

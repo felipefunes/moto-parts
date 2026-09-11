@@ -23,15 +23,20 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: [
     {
-      command: 'docker compose -f docker-compose.e2e.yml up --build',
+      command: 'docker compose -f docker-compose.e2e.yml up --build --force-recreate --renew-anon-volumes',
       cwd: repoRoot,
       url: `${backendUrl}/actuator/health`,
       timeout: 180_000,
-      reuseExistingServer: !process.env.CI,
-      // Without this, Playwright SIGKILLs `docker compose up`, which can't forward that to the
-      // containers it started (they're children of the Docker daemon, not of this process) --
-      // they're left running, and the next run reuses that stale stack instead of rebuilding.
-      // `docker compose up` in the foreground does stop its containers on SIGTERM.
+      // Same reasoning as the frontend entry below: this is the thing the harness exists to
+      // test, so silently reusing whatever already answers on :18080 (a stale stack from an
+      // older checkout, an interrupted previous run, or a manual `docker compose up` left
+      // running) would run every "real backend" assertion -- including catalog.spec.ts's
+      // Motor/Mahle counts -- against stale code and a stale database, green and meaningless.
+      reuseExistingServer: false,
+      // Without gracefulShutdown, Playwright SIGKILLs `docker compose up`, which can't forward
+      // that to the containers it started (they're children of the Docker daemon, not of this
+      // process) -- they're left running. `docker compose up` in the foreground does stop its
+      // containers on SIGTERM.
       gracefulShutdown: { signal: 'SIGTERM', timeout: 10_000 },
     },
     {

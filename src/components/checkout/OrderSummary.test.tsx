@@ -16,6 +16,6 @@ describe('OrderSummary', () => {
     render(<OrderSummary lines={[lineWithNoImages]} subtotalClp={20000} shippingClp={0} />);
 
     expect(screen.getByText('Producto sin fotos')).toBeInTheDocument();
-    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Sin imagen')).toBeInTheDocument();
   });
 });

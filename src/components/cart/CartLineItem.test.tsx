@@ -23,6 +23,6 @@ describe('CartLineItem', () => {
     );
 
     expect(screen.getByText('Producto sin fotos')).toBeInTheDocument();
-    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Sin imagen')).toBeInTheDocument();
   });
 });
