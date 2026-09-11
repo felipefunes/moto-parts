@@ -17,7 +17,9 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "sync:api-types": "openapi-typescript http://localhost:8080/v3/api-docs -o src/services/api/generated/types.ts"
+    "sync:api-types": "openapi-typescript http://localhost:8080/v3/api-docs -o src/services/api/generated/types.ts",
+    "test:e2e": "playwright test --config=e2e/playwright.config.ts",
+    "test:e2e:report": "playwright show-report e2e/playwright-report"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.1.0",
@@ -34,6 +36,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
+    "@playwright/test": "^1.63.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",

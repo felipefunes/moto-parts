@@ -1,4 +1,4 @@
-import type { Address, CartItem, Order, PaymentResult, Product } from '@/types';
+import type { Address, CartItem, Order, PaymentResult } from '@/types';
 import { ORDERS_STORAGE_KEY, ORDER_COUNTER_STORAGE_KEY } from '@/lib/constants';
 import { mockRequest } from './api/httpClient';
 
@@ -26,24 +26,19 @@ function writeOrders(orders: Order[]): void {
 export const orderService = {
   createOrder(params: {
     items: CartItem[];
-    products: Map<string, Product>;
     address: Address;
     paymentResult: PaymentResult;
     shippingClp: number;
   }): Promise<Order> {
-    const lineItems = params.items.map((item) => {
-      const product = params.products.get(item.productId);
-      const subtotalClp = item.unitPriceClp * item.quantity;
-      return {
-        productId: item.productId,
-        productName: product?.name ?? 'Producto',
-        productSlug: product?.slug ?? '',
-        imageUrl: product?.images[0]?.url ?? '',
-        quantity: item.quantity,
-        unitPriceClp: item.unitPriceClp,
-        subtotalClp,
-      };
-    });
+    const lineItems = params.items.map((item) => ({
+      productId: item.productId,
+      productName: item.product.name,
+      productSlug: item.product.slug,
+      imageUrl: item.product.images[0]?.url ?? '',
+      quantity: item.quantity,
+      unitPriceClp: item.unitPriceClp,
+      subtotalClp: item.unitPriceClp * item.quantity,
+    }));
 
     const subtotalClp = lineItems.reduce((sum, li) => sum + li.subtotalClp, 0);
 

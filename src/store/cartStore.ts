@@ -36,6 +36,17 @@ export const useCartStore = create<CartState>()(
               ...state.items,
               {
                 productId: product.id,
+                // Snapshotted at add-time rather than looked up later by id: cart items must
+                // render correctly regardless of which catalog source (mock or real backend)
+                // the product came from, and the two don't share an id space (Postgres UUIDs
+                // vs. mock ids) -- see CONTRIBUTING.md #7.
+                product: {
+                  slug: product.slug,
+                  name: product.name,
+                  brand: product.brand,
+                  stock: product.stock,
+                  images: product.images,
+                },
                 quantity,
                 unitPriceClp: product.priceClp,
                 addedAt: new Date().toISOString(),
@@ -69,6 +80,12 @@ export const useCartStore = create<CartState>()(
 
       totalClp: () => get().subtotalClp() + get().shippingClp(),
     }),
-    { name: CART_STORAGE_KEY },
+    {
+      name: CART_STORAGE_KEY,
+      version: 2,
+      // v1 items had no product snapshot (looked it up by id from mock data later, which is
+      // exactly the bug this version fixes) -- discard rather than render broken cart lines.
+      migrate: () => ({ items: [] }),
+    },
   ),
 );

@@ -17,15 +17,13 @@ export function OrderSummary({
       <div className="flex max-h-64 flex-col gap-3 overflow-y-auto pr-1">
         {lines.map((line) => (
           <div key={line.productId} className="flex items-center gap-3">
-            {line.product && (
-              <img
-                src={line.product.images[0].url}
-                alt={line.product.images[0].alt}
-                className="h-12 w-12 shrink-0 rounded-lg object-cover"
-              />
-            )}
+            <img
+              src={line.product.images[0].url}
+              alt={line.product.images[0].alt}
+              className="h-12 w-12 shrink-0 rounded-lg object-cover"
+            />
             <div className="flex-1">
-              <p className="line-clamp-1 text-xs font-medium text-text-primary">{line.product?.name}</p>
+              <p className="line-clamp-1 text-xs font-medium text-text-primary">{line.product.name}</p>
               <p className="text-xs text-text-muted">Cantidad: {line.quantity}</p>
             </div>
             <span className="font-mono text-xs font-semibold text-text-primary">

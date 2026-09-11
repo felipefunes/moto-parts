@@ -33,3 +33,7 @@ yarn-error.log*
 
 # Claude Code
 CLAUDE.local.md
+
+# E2E
+e2e/test-results
+e2e/playwright-report

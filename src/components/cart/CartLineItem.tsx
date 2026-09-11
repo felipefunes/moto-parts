@@ -8,7 +8,6 @@ export function CartLineItem({ line, compact }: { line: CartLine; compact?: bool
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
 
-  if (!line.product) return null;
   const image = line.product.images[0];
 
   return (
