@@ -19,12 +19,16 @@ test('browsing a category, filtering by brand, and opening a product all reflect
   await expect(page.getByText(/producto(s)? encontrado/)).toBeVisible();
 
   const productLinks = page.locator('a[href^="/producto/"]');
-  const countBeforeFilter = await productLinks.count();
-  expect(countBeforeFilter).toBeGreaterThan(0);
+  // Current seed: 4 products in Motor, 2 of them Mahle -- see docker-compose.e2e.yml /
+  // e2e/README.md for what this harness's data guarantees.
+  await expect(productLinks).toHaveCount(4);
 
   await page.getByRole('checkbox', { name: 'Mahle' }).click();
-  await expect(page.getByText(/producto(s)? encontrado/)).toBeVisible();
   await expect(page.getByRole('checkbox', { name: 'Mahle' })).toBeChecked();
+  // Waiting for the count to actually change (not just re-asserting the same "N encontrados"
+  // text, which would pass whether or not the filter did anything) is what proves brands=Mahle
+  // reached the backend and narrowed the result set.
+  await expect(productLinks).toHaveCount(2);
 
   await productLinks.first().click();
   await expect(page).toHaveURL(/\/producto\//);

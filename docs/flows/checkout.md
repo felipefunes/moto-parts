@@ -10,8 +10,11 @@ Unlike catalog browsing, **only the product data in this flow comes from the rea
 Cart, address, and payment are still client-only, by design (see `CONTRIBUTING.md` #7 and the
 `moto-parts` PR #25/#26 descriptions):
 
-- **Cart** — `useCartStore` (zustand), held in memory, not `rpm-parts-backend`'s
-  `POST /cart` / `POST /cart/{id}/items`.
+- **Cart** — `useCartStore` (zustand), persisted to `localStorage` (survives a reload/new tab,
+  not just in-memory), not `rpm-parts-backend`'s `POST /cart` / `POST /cart/{id}/items`. Each
+  cart item snapshots its product's display fields at add-time rather than re-looking them up
+  later, so it renders correctly regardless of which catalog source (mock or real backend) the
+  product came from — see the comment on `addItem` in `cartStore.ts`.
 - **Address** — written to `sessionStorage`, never sent anywhere.
 - **Payment** — `paymentService.confirmTransaction` simulates a Chilean gateway
   (Webpay Plus/Transbank-style) locally; a card ending in `0000` simulates a rejection, anything
@@ -33,6 +36,8 @@ integration for this half of the flow doesn't exist yet.
 
 ## Follow-up
 
-Once cart/checkout are migrated to `catalogService`-style real HTTP calls (tracked as an open
-item from the PR #26 review — `useCart.ts` / `CheckoutPaymentPage.tsx` still import `PRODUCTS`
-directly), this doc and test need a pass to reflect what's actually hitting the backend.
+`useCart.ts` / `CheckoutPaymentPage.tsx` no longer import `PRODUCTS` directly (fixed in PR #27,
+alongside this harness — see `cartStore.ts`'s `addItem` comment). What's left, tracked in
+`e2e/README.md`'s "Known gaps" section: cart/address/payment are still client-only by design (not
+a bug to fix, a scope boundary for this milestone), and the actual `POST /checkout` integration —
+with its inventory reservation — isn't wired into this UI yet.

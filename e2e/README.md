@@ -8,6 +8,9 @@ mostly client-only; see `docs/flows/checkout.md`).
 ## Prerequisites
 
 - Docker (for Postgres + the backend container).
+- Playwright's browser binaries: `npx playwright install chromium` (once per machine). Without
+  this, `npm run test:e2e` fails with "Executable doesn't exist" — right after paying for the
+  Docker image build, which is the annoying way to find out.
 - `rpm-parts-backend` checked out as a **sibling directory** of this repo:
   ```
   personal/

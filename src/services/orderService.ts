@@ -30,6 +30,13 @@ export const orderService = {
     paymentResult: PaymentResult;
     shippingClp: number;
   }): Promise<Order> {
+    // productName/productSlug/imageUrl come from each cart item's own snapshot (see the
+    // addItem comment in cartStore.ts), taken at add-time and never refreshed. Unlike the
+    // stock snapshot (a UI cap that's just wrong until the page reloads), this one is written
+    // into an order that's kept indefinitely: if a product's slug changes on the backend after
+    // it was added to a cart that later checks out, that order's "view product" link 404s
+    // forever. Accepted for the same reason (cart/checkout is client-only for now) -- revisit
+    // if orders start being read back against a live catalog.
     const lineItems = params.items.map((item) => ({
       productId: item.productId,
       productName: item.product.name,

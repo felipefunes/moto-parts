@@ -28,6 +28,11 @@ export default defineConfig({
       url: `${backendUrl}/actuator/health`,
       timeout: 180_000,
       reuseExistingServer: !process.env.CI,
+      // Without this, Playwright SIGKILLs `docker compose up`, which can't forward that to the
+      // containers it started (they're children of the Docker daemon, not of this process) --
+      // they're left running, and the next run reuses that stale stack instead of rebuilding.
+      // `docker compose up` in the foreground does stop its containers on SIGTERM.
+      gracefulShutdown: { signal: 'SIGTERM', timeout: 10_000 },
     },
     {
       command: 'npm run dev:motos',
