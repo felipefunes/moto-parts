@@ -3,22 +3,25 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 import type { CartLine } from '@/hooks/useCart';
 import { formatClp } from '@/lib/formatCurrency';
 import { useCartStore } from '@/store/cartStore';
+import { ImagePlaceholder } from '@/components/product/ImagePlaceholder';
 
 export function CartLineItem({ line, compact }: { line: CartLine; compact?: boolean }) {
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
 
-  if (!line.product) return null;
+  // A real backend product with no image rows maps to images: [] -- not every catalog source
+  // guarantees at least one image, so this can't assume image[0] exists.
   const image = line.product.images[0];
+  const imageClassName = compact ? 'h-16 w-16 rounded-lg object-cover' : 'h-24 w-24 rounded-lg object-cover';
 
   return (
     <div className="flex gap-3 py-3">
       <Link to={`/producto/${line.product.slug}`} className="shrink-0">
-        <img
-          src={image.url}
-          alt={image.alt}
-          className={compact ? 'h-16 w-16 rounded-lg object-cover' : 'h-24 w-24 rounded-lg object-cover'}
-        />
+        {image ? (
+          <img src={image.url} alt={image.alt} className={imageClassName} />
+        ) : (
+          <ImagePlaceholder className={imageClassName} iconSize={compact ? 20 : 28} />
+        )}
       </Link>
       <div className="flex flex-1 flex-col justify-between">
         <div>

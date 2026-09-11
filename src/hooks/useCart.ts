@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 import { useCartStore } from '@/store/cartStore';
-import { PRODUCTS } from '@theme-active/data/products';
-import type { Product } from '@/types';
+import type { CartLineProduct } from '@/types';
 
 export interface CartLine {
   productId: string;
-  product: Product | undefined;
+  product: CartLineProduct;
   quantity: number;
   unitPriceClp: number;
   subtotalClp: number;
@@ -20,16 +19,13 @@ export function useCart() {
 
   const lines: CartLine[] = useMemo(
     () =>
-      items.map((item) => {
-        const product = PRODUCTS.find((p) => p.id === item.productId);
-        return {
-          productId: item.productId,
-          product,
-          quantity: item.quantity,
-          unitPriceClp: item.unitPriceClp,
-          subtotalClp: item.unitPriceClp * item.quantity,
-        };
-      }),
+      items.map((item) => ({
+        productId: item.productId,
+        product: item.product,
+        quantity: item.quantity,
+        unitPriceClp: item.unitPriceClp,
+        subtotalClp: item.unitPriceClp * item.quantity,
+      })),
     [items],
   );
 

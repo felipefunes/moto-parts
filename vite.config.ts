@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -27,6 +27,10 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: 'jsdom',
       setupFiles: ['./src/test/setup.ts'],
+      // e2e/ holds Playwright specs, run via `npm run test:e2e`, not Vitest -- extend
+      // configDefaults.exclude rather than replace it, or Vitest stops skipping dist/, .git/,
+      // and its own config-file patterns.
+      exclude: [...configDefaults.exclude, 'e2e/**'],
     },
   };
 });

@@ -4,7 +4,6 @@ import type { Address, PaymentResult } from '@/types';
 import { CHECKOUT_ADDRESS_STORAGE_KEY } from '@/lib/constants';
 import { useCart } from '@/hooks/useCart';
 import { cartService, orderService } from '@/services';
-import { PRODUCTS } from '@theme-active/data/products';
 import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 import { PaymentMockForm } from '@/components/checkout/PaymentMockForm';
 import { OrderSummary } from '@/components/checkout/OrderSummary';
@@ -45,10 +44,8 @@ export function CheckoutPaymentPage() {
   async function handlePaymentResult(result: PaymentResult) {
     if (result.status !== 'authorized' || !address) return;
     setCreatingOrder(true);
-    const productsMap = new Map(PRODUCTS.map((p) => [p.id, p]));
     const order = await orderService.createOrder({
       items,
-      products: productsMap,
       address,
       paymentResult: result,
       shippingClp,

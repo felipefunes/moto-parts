@@ -1,0 +1,33 @@
+# Backend + Postgres for the E2E harness (see e2e/README.md). Playwright's webServer config
+# drives this up/down -- it's not meant to be run by hand.
+#
+# Assumes rpm-parts-backend is checked out as a sibling directory of this repo
+# (../rpm-parts-backend). That's a real limitation, not an oversight: this harness predates any
+# real staging environment (see RELEASING.md discussion) and cross-repo CI checkout needs a
+# decision on how the frontend's CI authenticates to the private backend repo -- deferred until
+# that's worth building. For now, this is a local/dev tool.
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: rpm_parts
+      POSTGRES_USER: rpm_parts
+      POSTGRES_PASSWORD: rpm_parts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rpm_parts"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  backend:
+    build:
+      context: ../rpm-parts-backend
+    ports:
+      - "18080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rpm_parts
+      SPRING_DATASOURCE_USERNAME: rpm_parts
+      SPRING_DATASOURCE_PASSWORD: rpm_parts
+    depends_on:
+      postgres:
+        condition: service_healthy
