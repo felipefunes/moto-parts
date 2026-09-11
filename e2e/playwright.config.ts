@@ -34,7 +34,12 @@ export default defineConfig({
       cwd: repoRoot,
       url: frontendUrl,
       timeout: 30_000,
-      reuseExistingServer: !process.env.CI,
+      // Never reuse an existing dev server here, CI or not: the whole point of this harness is
+      // testing against the real backend, and a plain `npm run dev:motos` someone already has
+      // running on :5173 has no VITE_API_BASE_URL -- reusing it would silently run every spec
+      // against catalogServiceMock instead, passing green while testing nothing this harness
+      // exists to test. Fail loudly (port already in use) instead of lying.
+      reuseExistingServer: false,
       env: { VITE_API_BASE_URL: backendUrl },
     },
   ],

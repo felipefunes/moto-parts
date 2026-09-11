@@ -40,6 +40,13 @@ export const useCartStore = create<CartState>()(
                 // render correctly regardless of which catalog source (mock or real backend)
                 // the product came from, and the two don't share an id space (Postgres UUIDs
                 // vs. mock ids) -- see CONTRIBUTING.md #7.
+                //
+                // `stock` is the one field here that isn't purely cosmetic: it gates the "+"
+                // button in CartLineItem, and this snapshot never refreshes (persisted to
+                // localStorage, re-add of an existing item only bumps quantity). A cart that
+                // outlives a real stock change will let the user raise quantity past what's
+                // actually available -- acceptable for now since cart is client-only by design,
+                // but read the live product (not this snapshot) if that stops being true.
                 product: {
                   slug: product.slug,
                   name: product.name,

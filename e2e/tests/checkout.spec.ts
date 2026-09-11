@@ -15,7 +15,9 @@ test('golden path: browse catalog, add to cart, and complete a mock checkout', a
 
   // Adding an item opens the cart drawer automatically -- follow it to the full cart page
   // instead of page.goto(), which would force a full reload and isn't how a user gets there.
-  await expect(page.getByRole('dialog', { name: 'Carrito de compras' })).toBeVisible();
+  // toBeInViewport() (not toBeVisible()) actually verifies it opened: the drawer is always
+  // mounted and only translated off-screen when closed, so toBeVisible() would pass regardless.
+  await expect(page.getByRole('dialog', { name: 'Carrito de compras' })).toBeInViewport();
   await page.getByRole('link', { name: 'Ver carrito completo' }).click();
 
   await expect(page).toHaveURL(/\/carrito$/);
