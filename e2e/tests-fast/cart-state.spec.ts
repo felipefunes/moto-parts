@@ -9,6 +9,11 @@ async function goToMotorListing(page: Page) {
   await page.goto('/');
   await page.getByRole('navigation').getByRole('link', { name: 'Motor' }).click();
   await expect(page).toHaveURL(/\/categoria\/motor$/);
+  // The URL updates before the product grid's async fetch resolves -- without this, reading a
+  // product's name or clicking its "Agregar al carrito" button can race the grid's own loading
+  // state. Passed locally every time but flaked on CI's slower runner, which is exactly the kind
+  // of race a faster machine hides.
+  await expect(page.getByText(/producto(s)? encontrado/)).toBeVisible();
 }
 
 /** Adds the nth product card's own "Agregar al carrito" button from the Motor listing grid,
