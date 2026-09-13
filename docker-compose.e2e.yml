@@ -19,6 +19,19 @@ services:
       timeout: 3s
       retries: 15
 
+  # Added alongside the backend's accounts/auth module (its own compose.yaml gained this at the
+  # same time) -- the backend now requires Redis for refresh tokens, on every request, not just
+  # from auth endpoints once the frontend has a login page. No volume, matching the backend's own
+  # compose.yaml: refresh tokens are meant to be disposable, and this is an ephemeral E2E run
+  # anyway.
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
   backend:
     build:
       context: ../rpm-parts-backend
@@ -28,6 +41,17 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rpm_parts
       SPRING_DATASOURCE_USERNAME: rpm_parts
       SPRING_DATASOURCE_PASSWORD: rpm_parts
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: "6379"
+      # Required since the backend's accounts/auth module (rpm-parts-backend PR #27): with no
+      # default anywhere outside that repo's own local dev/test profiles, the container now exits
+      # immediately at startup without this -- never binds :18080, and this harness's webServer
+      # health-check poll (playwright.config.ts) just times out with no clue why. Any string
+      # works here; this is an ephemeral E2E container, not a real deployment, so the value itself
+      # carries no real risk the way a committed production secret would.
+      APP_JWT_SECRET: insecure-e2e-only-secret-never-used-outside-this-disposable-container
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
