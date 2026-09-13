@@ -19,7 +19,9 @@
     "test:watch": "vitest",
     "sync:api-types": "openapi-typescript http://localhost:8080/v3/api-docs -o src/services/api/generated/types.ts",
     "test:e2e": "playwright test --config=e2e/playwright.config.ts",
-    "test:e2e:report": "playwright show-report e2e/playwright-report"
+    "test:e2e:report": "playwright show-report e2e/playwright-report",
+    "test:e2e:fast": "playwright test --config=e2e/playwright.fast.config.ts",
+    "test:e2e:fast:report": "playwright show-report e2e/playwright-report-fast"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.1.0",
