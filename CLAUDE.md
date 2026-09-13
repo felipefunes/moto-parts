@@ -6,7 +6,7 @@ Shared project context for anyone (human or Claude Code) working in this repo.
 
 A themeable e-commerce frontend prototype. Same catalog/cart/checkout codebase, different identity/data per theme, resolved at build time via Vite `--mode`. Each theme is built and deployed as a separate static site, not a shared multi-tenant SaaS. See `CONTRIBUTING.md` for architecture detail.
 
-Current themes: `motos` (RPM Parts) and `carteras` (RW). No backend — state lives in the browser (mock data + `localStorage`), with a simulated Chilean payment gateway (Webpay Plus/Transbank style).
+Current themes: `motos` (Worth Moto Parts) and `carteras` (RW). No backend — state lives in the browser (mock data + `localStorage`), with a simulated Chilean payment gateway (Webpay Plus/Transbank style).
 
 ## Stack
 
