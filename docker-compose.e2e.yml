@@ -50,6 +50,13 @@ services:
       # works here; this is an ephemeral E2E container, not a real deployment, so the value itself
       # carries no real risk the way a committed production secret would.
       APP_JWT_SECRET: insecure-e2e-only-secret-never-used-outside-this-disposable-container
+      # Also required as of the same PR: app.cors.allowed-origins has no default either (empty by
+      # default in every profile now, not just "prod" -- see that repo's application.properties
+      # comment), so without this every cross-origin call from the frontend dev server
+      # (playwright.config.ts's frontendUrl, http://localhost:5173) would fail with a CORS error
+      # -- not just the new auth endpoints, catalog/cart/checkout too, since they're all
+      # cross-origin from the frontend's point of view.
+      APP_CORS_ALLOWED_ORIGINS: http://localhost:5173
     depends_on:
       postgres:
         condition: service_healthy
