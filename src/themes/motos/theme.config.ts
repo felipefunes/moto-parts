@@ -7,7 +7,7 @@ import { ProductExtraSection } from './ProductExtraSection';
 
 export const themeConfig: ThemeConfig = {
   id: 'motos',
-  siteName: 'RPM Parts',
+  siteName: 'Worth Moto Parts',
   tagline: 'Repuestos de moto para todo Chile',
   searchPlaceholder: 'Busca pastillas de freno, cadenas, bujías...',
   primaryCategoryHref: '/categoria/motor',

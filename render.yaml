@@ -5,6 +5,9 @@ services:
     buildCommand: npm ci && npm run build:motos
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: false
+    domains:
+      - worthmotoparts.cl
+      - www.worthmotoparts.cl
     routes:
       - type: rewrite
         source: /*

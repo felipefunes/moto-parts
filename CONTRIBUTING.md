@@ -134,7 +134,7 @@ those two fields until it's fixed upstream.
 
 ## 8. Cómo funciona el sistema de temas
 
-Este repo dejó de ser una sola tienda (RPM Parts) para ser una plataforma con **temas**
+Este repo dejó de ser una sola tienda (Worth Moto Parts) para ser una plataforma con **temas**
 intercambiables (`src/themes/motos/`, `src/themes/carteras/`, …): mismo código de catálogo,
 carrito y checkout, distinta identidad/datos por cliente. Cada tema es un **build independiente**
 (`vite build --mode <tema>`), pensado para desplegarse como instancia separada por cliente — no

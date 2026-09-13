@@ -1,4 +1,4 @@
-/* Tema "RPM Parts" (repuestos de moto) — dark mode, gradientes estilo cripto + MotoGP. */
+/* Tema "Worth Moto Parts" (repuestos de moto) — dark mode, degradé rojo-naranja tipo insignia/taller. */
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
 @import '@fontsource/inter/600.css';
@@ -13,30 +13,32 @@
 :root {
   color-scheme: dark;
 
-  --color-bg-primary: 11 14 20;
-  --color-bg-secondary: 18 22 31;
-  --color-bg-elevated: 26 31 43;
-  --color-bg-overlay: 6 8 16;
+  --color-bg-primary: 10 9 8;
+  --color-bg-secondary: 18 16 14;
+  --color-bg-elevated: 28 25 22;
+  --color-bg-overlay: 5 4 4;
 
-  --color-border: 38 43 56;
-  --color-border-subtle: 29 34 48;
+  --color-border: 46 40 36;
+  --color-border-subtle: 32 28 25;
 
-  --color-text-primary: 245 247 250;
-  --color-text-secondary: 154 163 178;
-  --color-text-muted: 107 114 128;
+  --color-text-primary: 250 248 246;
+  --color-text-secondary: 168 160 152;
+  --color-text-muted: 120 112 104;
 
-  --color-brand-violet: 124 58 237;
-  --color-brand-blue: 59 130 246;
-  --color-brand-cyan: 6 182 212;
+  /* Degradé de marca "fuego": rojo oscuro -> naranja-rojo -> naranja brillante,
+     tomado de la insignia (pistón + engranaje) del logo definitivo. */
+  --color-brand-violet: 185 28 28;
+  --color-brand-blue: 234 88 12;
+  --color-brand-cyan: 249 115 22;
 
   --color-racing-red: 255 59 48;
-  --color-racing-amber: 245 158 11;
+  --color-racing-amber: 251 191 36;
   --color-racing-lime: 198 255 0;
 
   --color-success: 34 197 94;
   --color-warning: 245 158 11;
   --color-danger: 239 68 68;
-  --color-price: 34 211 238;
+  --color-price: 251 191 36;
 
   --color-shadow: 0 0 0;
 
