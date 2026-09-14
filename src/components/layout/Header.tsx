@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, MapPin } from 'lucide-react';
 import { SearchBar } from './SearchBar';
 import { CategoryNav } from './CategoryNav';
+import { AccountMenu } from './AccountMenu';
 import { useCartStore } from '@/store/cartStore';
 import { useUiStore } from '@/store/uiStore';
 import { themeConfig } from '@/theme';
@@ -35,6 +36,7 @@ export function Header() {
           >
             Cómo comprar
           </Link>
+          <AccountMenu />
           <button
             onClick={openCart}
             className="relative flex items-center gap-2 rounded-xl border border-border bg-bg-elevated px-3 py-2 text-text-primary transition-colors hover:border-brand-cyan"

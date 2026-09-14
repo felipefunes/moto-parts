@@ -11,6 +11,10 @@ import { CheckoutConfirmationPage } from '@/pages/checkout/CheckoutConfirmationP
 import { AboutPage } from '@/pages/AboutPage';
 import { HowToBuyPage } from '@/pages/HowToBuyPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
+import { LoginPage } from '@/pages/auth/LoginPage';
+import { RegisterPage } from '@/pages/auth/RegisterPage';
+import { MyAccountPage } from '@/pages/auth/MyAccountPage';
+import { RequireSession } from '@/components/auth/RequireSession';
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +32,16 @@ export const router = createBrowserRouter([
       { path: 'checkout/confirmacion/:orderNumber', element: <CheckoutConfirmationPage /> },
       { path: 'nosotros', element: <AboutPage /> },
       { path: 'como-comprar', element: <HowToBuyPage /> },
+      { path: 'ingresar', element: <LoginPage /> },
+      { path: 'crear-cuenta', element: <RegisterPage /> },
+      {
+        path: 'mi-cuenta',
+        element: (
+          <RequireSession>
+            <MyAccountPage />
+          </RequireSession>
+        ),
+      },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
