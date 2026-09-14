@@ -25,6 +25,7 @@ export function AccountMenu() {
   const dismissLogoutError = useSessionStore((s) => s.dismissLogoutError);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [retryingLogout, setRetryingLogout] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -62,19 +63,42 @@ export function AccountMenu() {
     navigate('/', { replace: true });
   }
 
+  // Retrying just calls logout() again -- it doesn't depend on any client-held token, only
+  // whatever refresh cookie the browser still has, which a failed remote call never touched (the
+  // request may never have reached the server at all). Local state is already `anonymous` either
+  // way; a successful retry only clears `logoutError` and confirms the server side too.
+  async function handleRetryLogout() {
+    setRetryingLogout(true);
+    try {
+      await logout();
+    } finally {
+      setRetryingLogout(false);
+    }
+  }
+
   const banner = logoutError && (
     <div
       role="alert"
-      className="absolute right-0 top-full mt-2 flex w-72 items-start gap-2 rounded-xl border border-danger/40 bg-bg-elevated p-3 text-xs text-text-secondary shadow-lg"
+      className="absolute right-0 top-full mt-2 flex w-72 flex-col gap-2 rounded-xl border border-danger/40 bg-bg-elevated p-3 text-xs text-text-secondary shadow-lg"
     >
-      <p className="flex-1">{logoutError}</p>
+      <div className="flex items-start gap-2">
+        <p className="flex-1">{logoutError}</p>
+        <button
+          type="button"
+          onClick={dismissLogoutError}
+          aria-label="Cerrar aviso"
+          className="text-text-muted hover:text-text-primary"
+        >
+          <X size={14} />
+        </button>
+      </div>
       <button
         type="button"
-        onClick={dismissLogoutError}
-        aria-label="Cerrar aviso"
-        className="text-text-muted hover:text-text-primary"
+        onClick={handleRetryLogout}
+        disabled={retryingLogout}
+        className="self-start font-semibold text-brand-cyan hover:underline disabled:opacity-60"
       >
-        <X size={14} />
+        {retryingLogout ? 'Reintentando…' : 'Reintentar cierre de sesión'}
       </button>
     </div>
   );

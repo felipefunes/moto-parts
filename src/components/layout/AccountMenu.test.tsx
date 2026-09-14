@@ -1,7 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { http, HttpResponse } from 'msw';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { server } from '@/test/msw/server';
+import { API_BASE_URL } from '@/test/msw/handlers/catalog';
 import { useSessionStore } from '@/store/sessionStore';
 import { AccountMenu } from './AccountMenu';
 
@@ -77,17 +80,59 @@ describe('AccountMenu', () => {
       status: 'anonymous',
       user: null,
       accessToken: null,
-      logoutError: 'No pudimos confirmar el cierre de sesión con el servidor. Tu sesión en este dispositivo se cerró igual.',
+      logoutError: 'No pudimos confirmar el cierre de sesión con el servidor. Saliste de tu cuenta en este navegador, pero la sesión podría seguir activa.',
     });
 
     renderAccountMenu();
 
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent(/no pudimos confirmar el cierre de sesión/i);
+    expect(alert).toHaveTextContent(/podría seguir activa/i);
 
     await userEvent.click(screen.getByRole('button', { name: 'Cerrar aviso' }));
 
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(useSessionStore.getState().logoutError).toBeNull();
+  });
+
+  describe('retrying a failed logout', () => {
+    beforeEach(() => {
+      vi.stubEnv('VITE_API_BASE_URL', API_BASE_URL);
+    });
+
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it('offers "Reintentar cierre de sesión", and a successful retry clears the banner', async () => {
+      useSessionStore.setState({
+        status: 'anonymous',
+        user: null,
+        accessToken: null,
+        logoutError: 'No pudimos confirmar el cierre de sesión con el servidor.',
+      });
+      server.use(http.post(`${API_BASE_URL}/auth/logout`, () => new HttpResponse(null, { status: 200 })));
+
+      renderAccountMenu();
+      await userEvent.click(screen.getByRole('button', { name: 'Reintentar cierre de sesión' }));
+
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(useSessionStore.getState().logoutError).toBeNull();
+    });
+
+    it('a retry that fails again keeps the banner visible, not a silent no-op', async () => {
+      useSessionStore.setState({
+        status: 'anonymous',
+        user: null,
+        accessToken: null,
+        logoutError: 'No pudimos confirmar el cierre de sesión con el servidor.',
+      });
+      server.use(http.post(`${API_BASE_URL}/auth/logout`, () => new HttpResponse(null, { status: 500 })));
+
+      renderAccountMenu();
+      await userEvent.click(screen.getByRole('button', { name: 'Reintentar cierre de sesión' }));
+
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+    });
   });
 });
