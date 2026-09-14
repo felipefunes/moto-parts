@@ -12,12 +12,11 @@ export function MyAccountPage() {
   const user = useSessionStore((s) => s.user);
   const logout = useSessionStore((s) => s.logout);
 
+  // logout() never rejects -- a failed remote call is reported via the store's `logoutError`
+  // (shown from AccountMenu, which stays mounted across this navigation), not a thrown error.
   async function handleLogout() {
-    try {
-      await logout();
-    } finally {
-      navigate('/', { replace: true });
-    }
+    await logout();
+    navigate('/', { replace: true });
   }
 
   if (!user) return null;

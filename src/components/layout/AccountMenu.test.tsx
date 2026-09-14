@@ -23,15 +23,25 @@ describe('AccountMenu', () => {
     expect(screen.queryByText(/^Hola,/)).not.toBeInTheDocument();
   });
 
-  it('links to /ingresar when anonymous', () => {
+  it('links to /ingresar when anonymous, with an accessible name even when the visible label is hidden on mobile', () => {
     useSessionStore.setState({ status: 'anonymous', user: null, accessToken: null });
 
     renderAccountMenu();
 
-    expect(screen.getByRole('link', { name: /Mi cuenta/ })).toHaveAttribute('href', '/ingresar');
+    const link = screen.getByRole('link', { name: 'Mi cuenta' });
+    expect(link).toHaveAttribute('href', '/ingresar');
   });
 
-  it('greets the user by their first name when authenticated', () => {
+  it('offers a retry, not a redirect-shaped link, when bootstrap could not reach the backend', () => {
+    useSessionStore.setState({ status: 'unavailable', user: null, accessToken: null });
+
+    renderAccountMenu();
+
+    expect(screen.getByRole('button', { name: /reintentar/i })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Mi cuenta' })).not.toBeInTheDocument();
+  });
+
+  it('greets the user by their first name when authenticated, with an accessible name on the trigger', () => {
     useSessionStore.setState({
       status: 'authenticated',
       user: { id: 'u1', email: 'juan@example.com', fullName: 'Juan Pérez', role: 'customer' },
@@ -41,6 +51,7 @@ describe('AccountMenu', () => {
     renderAccountMenu();
 
     expect(screen.getByText('Hola, Juan')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Hola, Juan\. Mi cuenta/ })).toBeInTheDocument();
   });
 
   it('Escape closes the open dropdown and returns focus to the trigger', async () => {
@@ -59,5 +70,24 @@ describe('AccountMenu', () => {
 
     expect(screen.queryByRole('link', { name: 'Mi cuenta' })).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
+  });
+
+  it('shows the logout-failed banner (not silence) when logoutError is set, and can be dismissed', async () => {
+    useSessionStore.setState({
+      status: 'anonymous',
+      user: null,
+      accessToken: null,
+      logoutError: 'No pudimos confirmar el cierre de sesión con el servidor. Tu sesión en este dispositivo se cerró igual.',
+    });
+
+    renderAccountMenu();
+
+    const alert = screen.getByRole('alert');
+    expect(alert).toHaveTextContent(/no pudimos confirmar el cierre de sesión/i);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cerrar aviso' }));
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(useSessionStore.getState().logoutError).toBeNull();
   });
 });

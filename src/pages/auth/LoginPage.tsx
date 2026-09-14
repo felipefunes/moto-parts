@@ -23,10 +23,27 @@ export function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Carries the same destination forward if the visitor switches to registering instead --
+  // otherwise a login started from checkout (say) that detours through "Crear cuenta" would
+  // land the new account on the generic /mi-cuenta default instead of back at checkout.
+  const returnTo = searchParams.get('returnTo');
+  const registerHref = returnTo ? `/crear-cuenta?returnTo=${encodeURIComponent(returnTo)}` : '/crear-cuenta';
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setSubmitting(true);
     setError(null);
+
+    // Explicit check, not just the inputs' `required` attribute -- native constraint validation
+    // on submit-button activation turned out not to reliably fire in every real-browser
+    // automation context tested (see RegisterPage's identical comment), so an empty field could
+    // otherwise reach the backend, get a generic 400, and be misreported here as "no pudimos
+    // conectarnos" (this page only has a message for 401).
+    if (!email.trim() || !password) {
+      setError('Ingresa tu correo y contraseña.');
+      return;
+    }
+
+    setSubmitting(true);
     try {
       await login(email, password);
       navigate(sanitizeReturnTo(searchParams.get('returnTo')), { replace: true });
@@ -50,7 +67,7 @@ export function LoginPage() {
         <h1 className="font-heading text-2xl font-bold text-text-primary">Ingresa a tu cuenta</h1>
         <p className="mt-2 text-sm text-text-secondary">Consulta tus pedidos y guarda tus datos para tu próxima compra.</p>
 
-        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4" noValidate>
+        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
           <div>
             <label htmlFor="login-email" className={labelClass}>
               Correo electrónico
@@ -105,7 +122,7 @@ export function LoginPage() {
 
         <p className="mt-6 text-center text-sm text-text-secondary">
           ¿No tienes cuenta?{' '}
-          <Link to="/crear-cuenta" className="font-semibold text-brand-cyan hover:underline">
+          <Link to={registerHref} className="font-semibold text-brand-cyan hover:underline">
             Crear cuenta
           </Link>
         </p>

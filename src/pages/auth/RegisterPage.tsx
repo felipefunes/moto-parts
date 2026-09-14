@@ -23,10 +23,29 @@ export function RegisterPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // See LoginPage's identical comment -- keeps the destination if the visitor switches forms.
+  const returnTo = searchParams.get('returnTo');
+  const loginHref = returnTo ? `/ingresar?returnTo=${encodeURIComponent(returnTo)}` : '/ingresar';
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setSubmitting(true);
     setError(null);
+
+    // Explicit checks, not just the inputs' `required`/`minLength` attributes: native constraint
+    // validation on submit-button activation turned out not to reliably fire in every real-browser
+    // automation context tested, so this can't be the only thing standing between an invalid
+    // submission and the backend. A password this short would otherwise reach the backend, get a
+    // generic 400, and show "revisa los datos ingresados" instead of a specific, immediate message.
+    if (!fullName.trim() || !email.trim()) {
+      setError('Completa tu nombre y correo.');
+      return;
+    }
+    if (password.length < 12) {
+      setError('La contraseña debe tener al menos 12 caracteres.');
+      return;
+    }
+
+    setSubmitting(true);
     try {
       await register(email, password, fullName);
       navigate(sanitizeReturnTo(searchParams.get('returnTo')), { replace: true });
@@ -50,7 +69,7 @@ export function RegisterPage() {
         <h1 className="font-heading text-2xl font-bold text-text-primary">Crea tu cuenta</h1>
         <p className="mt-2 text-sm text-text-secondary">Consulta tus pedidos en un solo lugar la próxima vez que compres.</p>
 
-        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4" noValidate>
+        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
           <div>
             <label htmlFor="register-name" className={labelClass}>
               Nombre completo
@@ -125,7 +144,7 @@ export function RegisterPage() {
 
         <p className="mt-6 text-center text-sm text-text-secondary">
           ¿Ya tienes cuenta?{' '}
-          <Link to="/ingresar" className="font-semibold text-brand-cyan hover:underline">
+          <Link to={loginHref} className="font-semibold text-brand-cyan hover:underline">
             Ingresar
           </Link>
         </p>
