@@ -11,10 +11,12 @@ Los enlaces de abajo son la referencia; edítalos ahí, no hay copia local que m
   https://claude.ai/code/artifact/2b8f0375-6c01-491d-867b-3aee7a91b2db
 - **Integraciones y backoffice (Fase 3)** — nuevo. Detalle de integración Transbank/Mercado Pago (son mecánicamente distintas), máquina de estados de pago, flujo de reembolso, y pantallas del panel administrativo.
   https://claude.ai/code/artifact/3e955384-fa6f-4271-aee2-a752c036848e
+- **Cuentas y accesos (UX)** — propuesta de diseño, sin cerrar. Auditoría de header/rutas/checkout actuales, separación explícita entre auth de cliente y portal laboral (no implementada en el schema hoy — `user_.role` sigue siendo un único campo), especificación de pantallas (login, cuenta, pedidos, back-office), estados de pedido y plan de entregas. Escrito antes de que exista una sola pantalla de esto en `moto-parts` — es la referencia para construirlas, no una descripción de algo ya hecho.
+  https://claude.ai/code/artifact/2a874edb-396b-49e4-a7c5-1297d2a8811c
 
 Alcance actual: solo RPM Parts (motos). RW/carteras no está incluido en ninguno de estos documentos.
 
-Con las Fases 1–3 cerradas, no quedan decisiones de diseño de backend abiertas — lo que sigue es implementación.
+Con las Fases 1–3 cerradas, no quedan decisiones de diseño de backend *ya construido* abiertas — lo que sigue es implementación. La propuesta de Cuentas y accesos es la excepción: es anterior a la implementación de su propia área y deja preguntas explícitamente abiertas (ver su sección 17).
 
 ## Implementación
 
