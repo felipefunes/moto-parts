@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { useSessionStore } from '@/store/sessionStore';
@@ -40,5 +41,23 @@ describe('AccountMenu', () => {
     renderAccountMenu();
 
     expect(screen.getByText('Hola, Juan')).toBeInTheDocument();
+  });
+
+  it('Escape closes the open dropdown and returns focus to the trigger', async () => {
+    useSessionStore.setState({
+      status: 'authenticated',
+      user: { id: 'u1', email: 'juan@example.com', fullName: 'Juan Pérez', role: 'customer' },
+      accessToken: 'token',
+    });
+
+    renderAccountMenu();
+    const trigger = screen.getByRole('button', { name: /Hola, Juan/ });
+    await userEvent.click(trigger);
+    expect(screen.getByRole('link', { name: 'Mi cuenta' })).toBeInTheDocument();
+
+    await userEvent.keyboard('{Escape}');
+
+    expect(screen.queryByRole('link', { name: 'Mi cuenta' })).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
   });
 });

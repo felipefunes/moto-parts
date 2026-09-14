@@ -1,4 +1,4 @@
-import { getJsonWithInit, postJson } from './api/httpClient';
+import { postJson } from './api/httpClient';
 import type { components } from './api/generated/types';
 
 export type RegisterRequest = components['schemas']['RegisterRequest'];
@@ -25,5 +25,8 @@ export const authService = {
 
   logout: () => postJson<void>('/auth/logout', undefined, { credentials: 'include' }),
 
-  me: (accessToken: string) => getJsonWithInit<UserSummary>('/auth/me', { headers: { Authorization: `Bearer ${accessToken}` } }),
+  // No `me()` here: nothing in this repo needs a bare Authorization-header GET yet -- every
+  // caller of this service already gets a fresh UserSummary back from register/login/refresh
+  // directly. Add it (and getJsonWithInit back in httpClient.ts) once something (e.g. a
+  // "Mis datos" page re-fetching the current user) actually needs it.
 };

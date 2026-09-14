@@ -19,16 +19,32 @@ export function AccountMenu() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    if (!open) return;
+
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setOpen(false);
       }
     }
+    // Escape closes the menu and returns focus to the trigger -- required by the UX spec (section
+    // 12: "Escape cierra popovers y devuelve foco al disparador"), not just a click-away. Only
+    // registered while `open`, so pressing Escape elsewhere on the page never steals focus here.
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    }
     document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [open]);
 
   async function handleLogout() {
     setOpen(false);
@@ -58,7 +74,7 @@ export function AccountMenu() {
 
   return (
     <div ref={containerRef} className="relative">
-      <button type="button" onClick={() => setOpen((v) => !v)} className={triggerClass} aria-expanded={open}>
+      <button ref={triggerRef} type="button" onClick={() => setOpen((v) => !v)} className={triggerClass} aria-expanded={open}>
         <User size={18} />
         <span className="hidden sm:inline">Hola, {user?.fullName?.split(' ')[0]}</span>
       </button>

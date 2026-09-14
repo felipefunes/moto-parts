@@ -39,13 +39,4 @@ describe('authService', () => {
   it('logout tolerates an empty 200 response body', async () => {
     await expect(authService.logout()).resolves.toBeUndefined();
   });
-
-  it('sends the access token as a Bearer header to /auth/me', async () => {
-    const result = await authService.me(authResponse.accessToken);
-    expect(result).toEqual(user);
-  });
-
-  it('rejects /auth/me without a valid Bearer token', async () => {
-    await expect(authService.me('not-a-real-token')).rejects.toMatchObject({ status: 401 });
-  });
 });

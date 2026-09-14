@@ -34,11 +34,4 @@ export const authHandlers = [
   http.post(`${API_BASE_URL}/auth/refresh`, () => new HttpResponse(null, { status: 401 })),
 
   http.post(`${API_BASE_URL}/auth/logout`, () => new HttpResponse(null, { status: 200 })),
-
-  http.get(`${API_BASE_URL}/auth/me`, ({ request }) => {
-    if (request.headers.get('Authorization') !== `Bearer ${authResponse.accessToken}`) {
-      return new HttpResponse(null, { status: 401 });
-    }
-    return HttpResponse.json(user);
-  }),
 ];

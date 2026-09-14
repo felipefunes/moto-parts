@@ -60,10 +60,10 @@ export async function fetchJsonOrNull<T>(
   return response.json() as Promise<T>;
 }
 
-/** Thrown by `postJson`/`getJsonWithCredentials` on a non-2xx response, carrying the real HTTP
- * status -- callers (authService's consumers) need to tell a 409 (email already registered)
- * apart from a 401 (wrong credentials) apart from a 5xx/network failure, which a single generic
- * `Error` can't express. */
+/** Thrown by `postJson` on a non-2xx response, carrying the real HTTP status -- callers
+ * (authService's consumers) need to tell a 409 (email already registered) apart from a 401
+ * (wrong credentials) apart from a 5xx/network failure, which a single generic `Error` can't
+ * express. */
 export class HttpError extends Error {
   constructor(
     public readonly status: number,
@@ -92,16 +92,6 @@ export async function postJson<T>(path: string, body?: unknown, init?: RequestIn
     headers: { 'Content-Type': 'application/json', ...init?.headers },
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
-  if (!response.ok) {
-    throw new HttpError(response.status, `API request to ${path} failed with status ${response.status}`);
-  }
-  return parseJsonBody<T>(response);
-}
-
-/** GET with a caller-supplied `RequestInit` (e.g. an `Authorization` header) -- `fetchJson` above
- * doesn't take one, since no other GET caller needs it yet. */
-export async function getJsonWithInit<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(buildUrl(path), init);
   if (!response.ok) {
     throw new HttpError(response.status, `API request to ${path} failed with status ${response.status}`);
   }
