@@ -54,6 +54,18 @@ describe('RegisterPage', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Ya existe una cuenta con ese correo. Intenta ingresar en su lugar.');
   });
 
+  it('moves focus to the error after a failed submit', async () => {
+    renderRegisterPage();
+
+    await userEvent.type(screen.getByLabelText('Nombre completo'), 'Alguien');
+    await userEvent.type(screen.getByLabelText('Correo electrónico'), 'ya-existe@example.com');
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'correct horse battery staple');
+    await userEvent.click(screen.getByRole('button', { name: 'Crear cuenta' }));
+
+    const alert = await screen.findByRole('alert');
+    await waitFor(() => expect(alert).toHaveFocus());
+  });
+
   it('has no RUT, confirm-password, or marketing-consent field', () => {
     renderRegisterPage();
 

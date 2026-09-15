@@ -72,6 +72,17 @@ describe('LoginPage', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('No pudimos ingresar con esos datos. Revisa tu correo y contraseña.');
   });
 
+  it('moves focus to the error after a failed submit, not just showing red text near wherever focus was', async () => {
+    renderLoginPage();
+
+    await userEvent.type(screen.getByLabelText('Correo electrónico'), user.email);
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'wrong password');
+    await userEvent.click(screen.getByRole('button', { name: 'Ingresar' }));
+
+    const alert = await screen.findByRole('alert');
+    await waitFor(() => expect(alert).toHaveFocus());
+  });
+
   it('has no forgot-password link, since the backend has no recovery endpoint yet', () => {
     renderLoginPage();
 

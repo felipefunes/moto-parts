@@ -3,8 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { User, X } from 'lucide-react';
 import { useSessionStore } from '@/store/sessionStore';
 
+// min-h-11 (44px) meets the UX spec's own touch-target target for this control (section 7) --
+// the cart button right next to it is a couple pixels short of it too, but that's this repo's
+// existing pattern, not something to silently diverge from here.
 const triggerClass =
-  'flex items-center gap-2 rounded-xl border border-border bg-bg-elevated px-3 py-2 text-sm text-text-primary transition-colors hover:border-brand-cyan';
+  'flex min-h-11 items-center gap-2 rounded-xl border border-border bg-bg-elevated px-3 py-2 text-sm text-text-primary transition-colors hover:border-brand-cyan';
 // Visible only from `sm` up, but always present for assistive tech -- `hidden` would remove the
 // only accessible name a mobile visitor's screen reader has for this control (the icon alone
 // isn't one). See the UX spec's WCAG 2.2 AA requirement in section 12.

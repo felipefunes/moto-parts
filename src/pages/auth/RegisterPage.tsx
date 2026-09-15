@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -22,6 +22,13 @@ export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
+  // See LoginPage's identical comment -- moves focus to the error itself so a sighted keyboard
+  // user knows the submit failed, not just a screen reader.
+  useEffect(() => {
+    if (error) errorRef.current?.focus();
+  }, [error]);
 
   // See LoginPage's identical comment -- keeps the destination if the visitor switches forms.
   const returnTo = searchParams.get('returnTo');
@@ -122,7 +129,7 @@ export function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
+                className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-text-muted hover:text-text-primary"
                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -132,7 +139,12 @@ export function RegisterPage() {
           </div>
 
           {error && (
-            <p role="alert" className="text-sm text-danger">
+            <p
+              ref={errorRef}
+              role="alert"
+              tabIndex={-1}
+              className="rounded text-sm text-danger focus:outline-none focus:ring-2 focus:ring-danger focus:ring-offset-2 focus:ring-offset-bg-primary"
+            >
               {error}
             </p>
           )}

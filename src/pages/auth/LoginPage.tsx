@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -22,6 +22,15 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
+  // Moves focus to the error itself once it appears -- a sighted keyboard user (not just a screen
+  // reader) needs to actually land somewhere to know the submit failed, not just see red text
+  // near wherever focus already was. Required by the UX spec (section 12: "foco al primer
+  // problema tras envío"). Runs only when `error` changes, not on every render.
+  useEffect(() => {
+    if (error) errorRef.current?.focus();
+  }, [error]);
 
   // Carries the same destination forward if the visitor switches to registering instead --
   // otherwise a login started from checkout (say) that detours through "Crear cuenta" would
@@ -101,7 +110,7 @@ export function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
+                className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-text-muted hover:text-text-primary"
                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -110,7 +119,12 @@ export function LoginPage() {
           </div>
 
           {error && (
-            <p role="alert" className="text-sm text-danger">
+            <p
+              ref={errorRef}
+              role="alert"
+              tabIndex={-1}
+              className="rounded text-sm text-danger focus:outline-none focus:ring-2 focus:ring-danger focus:ring-offset-2 focus:ring-offset-bg-primary"
+            >
               {error}
             </p>
           )}
