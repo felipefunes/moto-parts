@@ -50,6 +50,14 @@ services:
       # works here; this is an ephemeral E2E container, not a real deployment, so the value itself
       # carries no real risk the way a committed production secret would.
       APP_JWT_SECRET: insecure-e2e-only-secret-never-used-outside-this-disposable-container
+      # Required as of rpm-parts-backend's staff-MFA module (PR #39): TotpService fails application
+      # startup without this, same as APP_JWT_SECRET above -- but unlike that one, "any string" does
+      # NOT work here. That backend now validates this at construction: it must decode as Base64 to
+      # exactly 32 bytes (256 bits), or the container exits immediately, same failure mode as a
+      # missing value. This is a real, dedicated `openssl rand -base64 32` output -- an arbitrary
+      # placeholder string would fail the same validation a weak real key would. Ephemeral E2E
+      # container, no real deployment risk from committing it, same reasoning as APP_JWT_SECRET.
+      APP_MFA_TOTP_SECRET_ENCRYPTION_KEY: M0iG5xQipF7ZIQufVP5PtPWY8+lCSL4Rn9bBAjRCrpM=
       # Also required as of the same PR: app.cors.allowed-origins has no default either (empty by
       # default in every profile now, not just "prod" -- see that repo's application.properties
       # comment), so without this every cross-origin call from the frontend dev server
